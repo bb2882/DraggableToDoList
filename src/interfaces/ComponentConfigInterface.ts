@@ -1,4 +1,5 @@
 export interface ComponentConfigInterface {
-	selector: string,
-	template: string
+	class: string,
+	template: string,
+	styles: string
 }

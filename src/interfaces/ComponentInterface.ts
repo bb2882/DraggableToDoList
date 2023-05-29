@@ -1,5 +1,7 @@
 export interface ComponentInterface {
-	selector: string,
+	class: string,
 	template: string,
-	render(): void
+	styles: string,
+	render(root: HTMLElement): void
+	createSection(): void
 }
