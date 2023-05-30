@@ -1,5 +1,5 @@
 export interface ComponentConfigInterface {
-	class: string,
+	className: string,
 	template: string,
 	styles: string
 }

@@ -1,14 +1,14 @@
-import { Component } from '../framework/core/component';
+import { ComponentBase } from '../framework/core/ComponentBase';
 import { ComponentConfigInterface } from '../interfaces/ComponentConfigInterface';
 
-class AppComponent extends Component {
+class AppComponent extends ComponentBase {
 	constructor(config: ComponentConfigInterface) {
 		super(config)
 	}
 }
 
 export const appComponent = new AppComponent({
-	class: 'header',
+	className: 'header',
 	template: `
 		<div><h4>App component does work</h4></div>
 	`,
