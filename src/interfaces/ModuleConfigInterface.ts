@@ -1,5 +1,5 @@
-import { ComponentInterface } from './ComponentInterface';
+import { ComponentBaseInterface } from './ComponentBaseInterface';
 
 export interface ModuleConfigInterface {
-	components: ComponentInterface[]
+	components: ComponentBaseInterface[]
 }

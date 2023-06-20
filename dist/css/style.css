@@ -1,0 +1,121 @@
+body {
+  width: 100%;
+  max-height: 100vh;
+  white-space: nowrap;
+  overflow: auto;
+  background-color: #023e3e;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 40px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+  border: 14px solid rgba(255, 255, 255, 0);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #156260;
+  border-radius: 30px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #002a28;
+  border-radius: 20px;
+}
+
+.columns {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  align-items: flex-start;
+}
+.columns .column {
+  padding: 10px;
+  padding-right: 0;
+  width: 250px;
+  background-color: #e3e3e3;
+  max-height: 90vh;
+  overflow: auto;
+  overflow-y: scroll;
+  border-radius: 7px;
+}
+.columns .column__headline {
+  display: flex;
+  justify-content: space-between;
+}
+.columns .column__header {
+  color: #2c3134;
+  padding: 0px 5px;
+  margin: 0;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: none;
+  font-weight: 700;
+  cursor: auto;
+  resize: none;
+  height: auto;
+}
+.columns .column__error {
+  color: red;
+  padding: 0px 5px;
+  font-size: 14px;
+  margin-top: 5px;
+}
+.columns .column__button, .columns .column__add {
+  display: block;
+  padding: 10px;
+  color: #343538;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+  margin: 0 auto;
+}
+.columns .column__button::before, .columns .column__add::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background-color: #333;
+  transform: scaleX(0);
+  transition: transform 0.2s ease-in-out;
+}
+.columns .column__button:hover::before, .columns .column__add:hover::before {
+  transform: scaleX(1);
+}
+.columns .column__button span, .columns .column__add span {
+  position: relative;
+  z-index: 1;
+}
+.columns .column__add {
+  color: #e3e3e3;
+  margin: 0;
+  margin-top: 10px;
+}
+.columns .column__add::before {
+  background-color: #e3e3e3;
+}
+.columns .column__icons {
+  width: 40px;
+  display: flex;
+  justify-content: space-between;
+  visibility: hidden;
+}
+.columns .column__icon {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+.columns .column:hover .column__icons {
+  visibility: visible;
+}

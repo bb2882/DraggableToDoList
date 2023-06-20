@@ -1,7 +1,7 @@
-import { ComponentInterface } from './ComponentInterface'
+import { ComponentBaseInterface } from './ComponentBaseInterface'
 
 export interface ModuleInterface {
-	components: ComponentInterface[]
+	components: ComponentBaseInterface[]
 	start(): void
 	initComponents(): void
 }

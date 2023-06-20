@@ -1,10 +1,10 @@
-import { ComponentInterface } from '../interfaces/ComponentInterface';
+import { ComponentBaseInterface } from '../interfaces/ComponentBaseInterface';
 import { ModuleConfigInterface } from '../interfaces/ModuleConfigInterface';
 import { ModuleInterface } from '../interfaces/ModuleInterface';
-import { appComponent } from './appComponent';
+import { columnComponent } from './Components/ColumnComponent';
 
 class AppModule implements ModuleInterface {
-	readonly components: ComponentInterface[]
+	readonly components: ComponentBaseInterface[]
 	constructor(config: ModuleConfigInterface) {
 		this.components = config.components
 	}
@@ -21,6 +21,6 @@ class AppModule implements ModuleInterface {
 
 export const appModule = new AppModule({
 	components: [
-		appComponent,
+		columnComponent,
 	],
 })
