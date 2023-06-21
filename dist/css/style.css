@@ -58,7 +58,6 @@ body {
   font-weight: 700;
   cursor: auto;
   resize: none;
-  height: auto;
 }
 .columns .column__error {
   color: red;

@@ -18,17 +18,27 @@ class ColumnComponent extends ComponentBase {
 		icon.src = src
 	}
 
-	lengthCheck(input: HTMLInputElement, errorElement: HTMLDivElement) {
-		if (input.value.length === 0) {
-			input.focus()
-			input.style.borderBottom = '1px solid red'
-			errorElement.innerText = 'must have at least 1 character'
+	addRow(header: HTMLTextAreaElement) {
+		header.addEventListener('input', () => {
+			if (header.value.length > 24) {
+				header.rows = 2
+			} else {
+				header.rows = 1 
+			}
+		})
+	}
 
+	lengthCheck(header: HTMLTextAreaElement, errorElement: HTMLDivElement) {
+		
+		if (header.value.length === 0) {
+			header.focus()
+			header.style.borderBottom = '1px solid red'
+			errorElement.innerText = 'must have at least 1 character'
 			return false
 		}
 
-		if (input.style.borderBottom || errorElement.innerText !== '') {
-			input.style.borderBottom = '0px'
+		if (header.style.borderBottom || errorElement.innerText !== '') {
+			header.style.borderBottom = '0px'
 			errorElement.innerText = ''
 		}
 
@@ -40,9 +50,11 @@ class ColumnComponent extends ComponentBase {
 			return
 		}
 
-		const header = root.querySelector('.column__header') as HTMLInputElement
+		const header = root.querySelector('.column__header') as HTMLTextAreaElement
 		const icon = root.querySelector('.column__icon-pencil') as HTMLImageElement
 		const errorElement = root.querySelector('.column__error') as HTMLDivElement
+
+		this.addRow(header)
 
 		if (icon.src === 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg') {
 			header.removeAttribute('readonly')
@@ -73,7 +85,7 @@ export const columnComponent = new ColumnComponent({
 	template: `
 		<div class='column'>
 			<div class='column__headline'>
-				<input type='text' maxlength="25" class='column__header' value='Name' readonly/>
+				<textarea type='text' maxlength="40" cols='22' rows = '1' class='column__header' readonly>Name</textarea>
 				<div class='column__icons'>
 					<img class='column__icon column__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
 					<img class='column__icon column__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
