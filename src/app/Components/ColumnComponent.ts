@@ -14,13 +14,22 @@ class ColumnComponent extends ComponentBase {
 		}
 	}
 
+	preventLineBreak(header: HTMLTextAreaElement) {
+		header.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter' && (e.shiftKey || e.code === 'Enter' || e.keyCode === 13)) {
+				e.preventDefault();
+				console.log('times')
+			}
+		})
+	}
+
 	changeIcon(icon: HTMLImageElement, src: string) {
 		icon.src = src
 	}
 
 	addRow(header: HTMLTextAreaElement) {
 		header.addEventListener('input', () => {
-			if (header.value.length > 24) {
+			if (header.value.length > 23) {
 				header.rows = 2
 			} else {
 				header.rows = 1 
@@ -55,13 +64,14 @@ class ColumnComponent extends ComponentBase {
 		const errorElement = root.querySelector('.column__error') as HTMLDivElement
 
 		this.addRow(header)
+		this.preventLineBreak(header)
 
 		if (icon.src === 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg') {
 			header.removeAttribute('readonly')
 			header.focus()
 			const valueLength = header.value.length;
 			header.setSelectionRange(valueLength, valueLength);
-			header.style.borderBottom = '1px solid #2c3134'
+			header.style.borderBottom = '1px solid #4b4e50'
 			this.changeIcon(icon, 'http://127.0.0.1:5500/dist/img/check.svg')
 		} else {
 			if (!this.lengthCheck(header, errorElement)) return

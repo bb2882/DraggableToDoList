@@ -108,12 +108,20 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], f
                         'click .column__button': 'changeHeader'
                     };
                 }
+                preventLineBreak(header) {
+                    header.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && (e.shiftKey || e.code === 'Enter' || e.keyCode === 13)) {
+                            e.preventDefault();
+                            console.log('times');
+                        }
+                    });
+                }
                 changeIcon(icon, src) {
                     icon.src = src;
                 }
                 addRow(header) {
                     header.addEventListener('input', () => {
-                        if (header.value.length > 24) {
+                        if (header.value.length > 23) {
                             header.rows = 2;
                         }
                         else {
@@ -142,12 +150,13 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], f
                     const icon = root.querySelector('.column__icon-pencil');
                     const errorElement = root.querySelector('.column__error');
                     this.addRow(header);
+                    this.preventLineBreak(header);
                     if (icon.src === 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg') {
                         header.removeAttribute('readonly');
                         header.focus();
                         const valueLength = header.value.length;
                         header.setSelectionRange(valueLength, valueLength);
-                        header.style.borderBottom = '1px solid #2c3134';
+                        header.style.borderBottom = '1px solid #4b4e50';
                         this.changeIcon(icon, 'http://127.0.0.1:5500/dist/img/check.svg');
                     }
                     else {
