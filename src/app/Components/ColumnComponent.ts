@@ -55,7 +55,8 @@ class ColumnComponent extends ComponentBase {
 	}
 
 	changeHeaderName(root: HTMLDivElement) {
-		if ((root.querySelector('.column__header') === null || undefined) || (root.querySelector('.column__icon-pencil') === null || undefined)) {
+		if ((root.querySelector('.column__header') === null || undefined) || (root.querySelector('.column__icon-pencil') === null || undefined) ||
+		(root.querySelector('.column__icon-pencil') === null || undefined)) {
 			return
 		}
 
@@ -81,8 +82,13 @@ class ColumnComponent extends ComponentBase {
 		}
 	}
 
-	deleteColumn() {
-
+	deleteColumn(root: HTMLDivElement) {
+		if (root.querySelector('.column') === null || undefined) {
+			return
+		}
+		
+		const column = root.querySelector('.column') as HTMLDivElement
+		column.remove()
 	}
 
 	addCard() {

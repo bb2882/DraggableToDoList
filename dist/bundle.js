@@ -143,7 +143,8 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], f
                     return true;
                 }
                 changeHeaderName(root) {
-                    if ((root.querySelector('.column__header') === null || undefined) || (root.querySelector('.column__icon-pencil') === null || undefined)) {
+                    if ((root.querySelector('.column__header') === null || undefined) || (root.querySelector('.column__icon-pencil') === null || undefined) ||
+                        (root.querySelector('.column__icon-pencil') === null || undefined)) {
                         return;
                     }
                     const header = root.querySelector('.column__header');
@@ -167,7 +168,12 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], f
                         this.changeIcon(icon, 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg');
                     }
                 }
-                deleteColumn() {
+                deleteColumn(root) {
+                    if (root.querySelector('.column') === null || undefined) {
+                        return;
+                    }
+                    const column = root.querySelector('.column');
+                    column.remove();
                 }
                 addCard() {
                 }
