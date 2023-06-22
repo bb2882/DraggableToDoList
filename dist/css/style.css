@@ -41,7 +41,7 @@ body {
   max-height: 90vh;
   overflow: auto;
   overflow-y: scroll;
-  border-radius: 7px;
+  border-radius: 4px;
 }
 .columns .column__headline {
   display: flex;
@@ -105,17 +105,32 @@ body {
 .columns .column__add::before {
   background-color: #e3e3e3;
 }
-.columns .column__icons {
+.columns .column:hover .icons {
+  visibility: visible;
+}
+
+.icons {
   width: 40px;
   display: flex;
   justify-content: space-between;
   visibility: hidden;
 }
-.columns .column__icon {
+
+.icon {
   width: 15px;
   height: 15px;
   cursor: pointer;
 }
-.columns .column:hover .column__icons {
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  width: 230px;
+  min-height: 50px;
+  border-radius: 4px;
+  padding: 10px;
+}
+.row:hover .icons {
   visibility: visible;
 }

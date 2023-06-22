@@ -12,7 +12,7 @@
 		max-height: 90vh;
 		overflow: auto;
 		overflow-y: scroll;
-		border-radius: 7px;
+		border-radius: 4px;
 
 		&__headline {
 			display: flex;
@@ -86,21 +86,10 @@
 			}
 		}
 
-		&__icons {
-			width: 40px;
-			display: flex;
-			justify-content: space-between;
-			visibility: hidden;
-		}
-
-		&__icon {
-			width: 15px;
-			height: 15px;
-			cursor: pointer;
-		}
+		
 
 		&:hover {
-			.column__icons {
+			.icons {
 				visibility: visible;
 			}
 		}

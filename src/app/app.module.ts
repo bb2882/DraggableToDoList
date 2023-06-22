@@ -2,6 +2,7 @@ import { ComponentBaseInterface } from '../interfaces/ComponentBaseInterface';
 import { ModuleConfigInterface } from '../interfaces/ModuleConfigInterface';
 import { ModuleInterface } from '../interfaces/ModuleInterface';
 import { columnComponent } from './Components/ColumnComponent';
+import { rowComponent } from './Components/RowComponent';
 
 class AppModule implements ModuleInterface {
 	readonly components: ComponentBaseInterface[]
@@ -22,5 +23,6 @@ class AppModule implements ModuleInterface {
 export const appModule = new AppModule({
 	components: [
 		columnComponent,
+		rowComponent
 	],
 })

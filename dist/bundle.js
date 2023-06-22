@@ -52,16 +52,20 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     root.append(this.createSection(this.template, this.className));
                     this.initEvents(root);
                 }
+                createSection(template, className) {
+                    let div = document.createElement('div');
+                    div.innerHTML = template;
+                    div.classList.add(className);
+                    return div;
+                }
                 //Property 'events' does not exist on type 'ComponentBase'.
                 events() {
                     return {};
                 }
                 initEvents(root) {
                     let events = this.events();
-                    if (Object.keys(events).length === 0) {
-                        console.log('not found');
+                    if (Object.keys(events).length === 0)
                         return;
-                    }
                     Object.keys(events).forEach(key => {
                         var _a;
                         let listener = key.split(' ');
@@ -75,12 +79,6 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                         });
                     });
                 }
-                createSection(template, className) {
-                    let div = document.createElement('div');
-                    div.innerHTML = template;
-                    div.classList.add(className);
-                    return div;
-                }
             };
             exports_5("ComponentBase", ComponentBase);
         }
@@ -88,7 +86,7 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
 });
 System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], function (exports_6, context_6) {
     "use strict";
-    var ComponentBase_1, ColumnComponent, columnComponent;
+    var ComponentBase_1, columnPath, headerPath, pencilPath, pencilSrc, checkSrc, errorElementPath, ColumnComponent, columnComponent;
     var __moduleName = context_6 && context_6.id;
     return {
         setters: [
@@ -97,14 +95,21 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], f
             }
         ],
         execute: function () {
+            //cosntants
+            columnPath = '.column';
+            headerPath = '.column__header';
+            pencilPath = '.icon-pencil';
+            pencilSrc = 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg';
+            checkSrc = 'http://127.0.0.1:5500/dist/img/check.svg';
+            errorElementPath = '.column__error';
             ColumnComponent = class ColumnComponent extends ComponentBase_1.ComponentBase {
                 constructor(config) {
                     super(config);
                 }
                 events() {
                     return {
-                        'click .column__icon-pencil': 'changeHeaderName',
-                        'click .column__icon-trash': 'deleteColumn',
+                        'click .icon-pencil': 'changeHeaderName',
+                        'click .icon-trash': 'deleteColumn',
                         'click .column__button': 'changeHeader'
                     };
                 }
@@ -129,6 +134,19 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], f
                         }
                     });
                 }
+                disableSpace(header) {
+                    header.addEventListener('keydown', (e) => {
+                        const key = e.keyCode || e.which;
+                        // Disable space if nothing is typed
+                        if (key === 32 && header.value.trim() === '') {
+                            e.preventDefault();
+                        }
+                        // Prevent double spaces
+                        if (key === 32 && header.value.slice(-1) === ' ') {
+                            e.preventDefault();
+                        }
+                    });
+                }
                 lengthCheck(header, errorElement) {
                     if (header.value.length === 0) {
                         header.focus();
@@ -143,33 +161,35 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], f
                     return true;
                 }
                 changeHeaderName(root) {
-                    if ((root.querySelector('.column__header') === null || undefined) || (root.querySelector('.column__icon-pencil') === null || undefined) ||
-                        (root.querySelector('.column__icon-pencil') === null || undefined)) {
+                    if ((root.querySelector(headerPath) === null || undefined) || (root.querySelector(pencilPath) === null || undefined) ||
+                        (root.querySelector(errorElementPath) === null || undefined)) {
                         return;
                     }
-                    const header = root.querySelector('.column__header');
-                    const icon = root.querySelector('.column__icon-pencil');
-                    const errorElement = root.querySelector('.column__error');
+                    const header = root.querySelector(headerPath);
+                    const icon = root.querySelector(pencilPath);
+                    const errorElement = root.querySelector(errorElementPath);
+                    header.value = header.value.trim();
                     this.addRow(header);
                     this.preventLineBreak(header);
-                    if (icon.src === 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg') {
+                    this.disableSpace(header);
+                    if (icon.src === pencilSrc) {
                         header.removeAttribute('readonly');
                         header.focus();
                         const valueLength = header.value.length;
                         header.setSelectionRange(valueLength, valueLength);
                         header.style.borderBottom = '1px solid #4b4e50';
-                        this.changeIcon(icon, 'http://127.0.0.1:5500/dist/img/check.svg');
+                        this.changeIcon(icon, checkSrc);
                     }
                     else {
                         if (!this.lengthCheck(header, errorElement))
                             return;
                         header.setAttribute('readonly', 'readonly');
                         header.style.borderBottom = '0px';
-                        this.changeIcon(icon, 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg');
+                        this.changeIcon(icon, pencilSrc);
                     }
                 }
                 deleteColumn(root) {
-                    if (root.querySelector('.column') === null || undefined) {
+                    if (root.querySelector(columnPath) === null || undefined) {
                         return;
                     }
                     const column = root.querySelector('.column');
@@ -184,9 +204,9 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], f
 		<div class='column'>
 			<div class='column__headline'>
 				<textarea type='text' maxlength="40" cols='22' rows = '1' class='column__header' readonly>Name</textarea>
-				<div class='column__icons'>
-					<img class='column__icon column__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
-					<img class='column__icon column__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
+				<div class='icons'>
+					<img class='icon icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
+					<img class='icon icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
 				</div>
 			</div>
 			<div class='column__error'></div>
@@ -218,14 +238,49 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], f
         }
     };
 });
-System.register("app/app.module", ["app/Components/ColumnComponent"], function (exports_7, context_7) {
+System.register("app/Components/RowComponent", ["framework/ComponentBase"], function (exports_7, context_7) {
     "use strict";
-    var ColumnComponent_1, AppModule, appModule;
+    var ComponentBase_2, RowComponent, rowComponent;
     var __moduleName = context_7 && context_7.id;
+    return {
+        setters: [
+            function (ComponentBase_2_1) {
+                ComponentBase_2 = ComponentBase_2_1;
+            }
+        ],
+        execute: function () {
+            RowComponent = class RowComponent extends ComponentBase_2.ComponentBase {
+                constructor(config) {
+                    super(config);
+                }
+            };
+            exports_7("rowComponent", rowComponent = new RowComponent({
+                className: 'rows',
+                template: `
+		<div class='row'>
+			<textarea class='row__text'>aaaaaaaaaaa</textarea>
+
+			<div class='icons'>
+				<img class='icon icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
+				<img class='icon icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
+			</div>
+		</div>
+	`
+            }));
+        }
+    };
+});
+System.register("app/app.module", ["app/Components/ColumnComponent", "app/Components/RowComponent"], function (exports_8, context_8) {
+    "use strict";
+    var ColumnComponent_1, RowComponent_1, AppModule, appModule;
+    var __moduleName = context_8 && context_8.id;
     return {
         setters: [
             function (ColumnComponent_1_1) {
                 ColumnComponent_1 = ColumnComponent_1_1;
+            },
+            function (RowComponent_1_1) {
+                RowComponent_1 = RowComponent_1_1;
             }
         ],
         execute: function () {
@@ -241,31 +296,32 @@ System.register("app/app.module", ["app/Components/ColumnComponent"], function (
                     this.components.forEach(c => c.render(root));
                 }
             };
-            exports_7("appModule", appModule = new AppModule({
+            exports_8("appModule", appModule = new AppModule({
                 components: [
                     ColumnComponent_1.columnComponent,
+                    RowComponent_1.rowComponent
                 ],
             }));
         }
     };
 });
-System.register("framework/start", [], function (exports_8, context_8) {
+System.register("framework/start", [], function (exports_9, context_9) {
     "use strict";
-    var __moduleName = context_8 && context_8.id;
+    var __moduleName = context_9 && context_9.id;
     function start(module) {
         module.start();
     }
-    exports_8("start", start);
+    exports_9("start", start);
     return {
         setters: [],
         execute: function () {
         }
     };
 });
-System.register("index", ["app/app.module", "framework/start"], function (exports_9, context_9) {
+System.register("index", ["app/app.module", "framework/start"], function (exports_10, context_10) {
     "use strict";
     var app_module_1, start_1;
-    var __moduleName = context_9 && context_9.id;
+    var __moduleName = context_10 && context_10.id;
     return {
         setters: [
             function (app_module_1_1) {

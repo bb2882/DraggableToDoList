@@ -1,6 +1,14 @@
 import { ComponentBase } from '../../framework/ComponentBase';
 import { ComponentConfigInterface } from '../../interfaces/ComponentConfigInterface';
 
+//cosntants
+const columnPath = '.column'
+const headerPath = '.column__header'
+const pencilPath = '.icon-pencil'
+const pencilSrc = 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg'
+const checkSrc = 'http://127.0.0.1:5500/dist/img/check.svg'
+const errorElementPath = '.column__error'
+
 class ColumnComponent extends ComponentBase {
 	constructor(config: ComponentConfigInterface) {
 		super(config)
@@ -8,8 +16,8 @@ class ColumnComponent extends ComponentBase {
 
 	events() {
 		return {
-			'click .column__icon-pencil': 'changeHeaderName',
-			'click .column__icon-trash': 'deleteColumn',
+			'click .icon-pencil': 'changeHeaderName',
+			'click .icon-trash': 'deleteColumn',
 			'click .column__button': 'changeHeader'
 		}
 	}
@@ -37,8 +45,23 @@ class ColumnComponent extends ComponentBase {
 		})
 	}
 
+	disableSpace(header: HTMLTextAreaElement) {
+		header.addEventListener('keydown', (e) => {
+			const key = e.keyCode || e.which;
+
+			// Disable space if nothing is typed
+			if (key === 32 && header.value.trim() === '') {
+				e.preventDefault();
+			}
+
+			// Prevent double spaces
+			if (key === 32 && header.value.slice(-1) === ' ') {
+				e.preventDefault();
+			}
+		})
+	}
+
 	lengthCheck(header: HTMLTextAreaElement, errorElement: HTMLDivElement) {
-		
 		if (header.value.length === 0) {
 			header.focus()
 			header.style.borderBottom = '1px solid red'
@@ -55,35 +78,38 @@ class ColumnComponent extends ComponentBase {
 	}
 
 	changeHeaderName(root: HTMLDivElement) {
-		if ((root.querySelector('.column__header') === null || undefined) || (root.querySelector('.column__icon-pencil') === null || undefined) ||
-		(root.querySelector('.column__icon-pencil') === null || undefined)) {
+		if ((root.querySelector(headerPath) === null || undefined) || (root.querySelector(pencilPath) === null || undefined) ||
+			(root.querySelector(errorElementPath) === null || undefined)) {
 			return
 		}
 
-		const header = root.querySelector('.column__header') as HTMLTextAreaElement
-		const icon = root.querySelector('.column__icon-pencil') as HTMLImageElement
-		const errorElement = root.querySelector('.column__error') as HTMLDivElement
+		const header = root.querySelector(headerPath) as HTMLTextAreaElement
+		const icon = root.querySelector(pencilPath) as HTMLImageElement
+		const errorElement = root.querySelector(errorElementPath) as HTMLDivElement
 
+		header.value = header.value.trim()
 		this.addRow(header)
 		this.preventLineBreak(header)
+		this.disableSpace(header)
 
-		if (icon.src === 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg') {
+		if (icon.src === pencilSrc) {
 			header.removeAttribute('readonly')
 			header.focus()
+			
 			const valueLength = header.value.length;
 			header.setSelectionRange(valueLength, valueLength);
 			header.style.borderBottom = '1px solid #4b4e50'
-			this.changeIcon(icon, 'http://127.0.0.1:5500/dist/img/check.svg')
+			this.changeIcon(icon, checkSrc)
 		} else {
 			if (!this.lengthCheck(header, errorElement)) return
 			header.setAttribute('readonly', 'readonly')
 			header.style.borderBottom = '0px'
-			this.changeIcon(icon, 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg')
+			this.changeIcon(icon, pencilSrc)
 		}
 	}
 
 	deleteColumn(root: HTMLDivElement) {
-		if (root.querySelector('.column') === null || undefined) {
+		if (root.querySelector(columnPath) === null || undefined) {
 			return
 		}
 		
@@ -102,9 +128,9 @@ export const columnComponent = new ColumnComponent({
 		<div class='column'>
 			<div class='column__headline'>
 				<textarea type='text' maxlength="40" cols='22' rows = '1' class='column__header' readonly>Name</textarea>
-				<div class='column__icons'>
-					<img class='column__icon column__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
-					<img class='column__icon column__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
+				<div class='icons'>
+					<img class='icon icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
+					<img class='icon icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
 				</div>
 			</div>
 			<div class='column__error'></div>

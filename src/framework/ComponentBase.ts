@@ -16,6 +16,12 @@ export class ComponentBase implements ComponentBaseInterface {
 		this.initEvents(root)
 	}
 
+	createSection(template: string, className: string) {
+		let div = document.createElement('div') as HTMLDivElement
+		div.innerHTML = template
+		div.classList.add(className);
+		return div
+	}
 
 	//Property 'events' does not exist on type 'ComponentBase'.
 	events() {
@@ -25,10 +31,7 @@ export class ComponentBase implements ComponentBaseInterface {
 	initEvents(root: HTMLDivElement) {
 		let events: object = this.events()
 
-		if (Object.keys(events).length === 0) {
-			console.log('not found')
-			return
-		}
+		if (Object.keys(events).length === 0) return
 
 		Object.keys(events).forEach(key => {
 			let listener = key.split(' ')
@@ -42,12 +45,5 @@ export class ComponentBase implements ComponentBaseInterface {
 					method(root)
 				})
 		})
-	}
-
-	createSection(template: string, className: string) {
-		let div = document.createElement('div') as HTMLDivElement
-		div.innerHTML = template
-		div.classList.add(className);
-		return div
 	}
 }
