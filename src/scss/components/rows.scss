@@ -3,13 +3,32 @@
 }
 
 .row {
-	display: flex;
-	justify-content: space-between;
 	background-color: #fff;
 	width: 230px;
 	min-height: 50px;
 	border-radius: 4px;
 	padding: 10px;
+	
+	&__headline {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+	}
+
+	&__text {
+		color: #2c3134;
+		padding: 0px 5px;
+		margin: 0;
+		font-size: 15px;
+		appearance: none;
+		border: none;
+		outline: none;
+		background: none;
+		font-weight: 700;
+		cursor: auto;
+		resize: none;
+		}
+
 	&:hover {
 		.icons {
 			visibility: visible;

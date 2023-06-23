@@ -46,6 +46,7 @@ body {
 .columns .column__headline {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
 }
 .columns .column__header {
   color: #2c3134;
@@ -59,12 +60,6 @@ body {
   font-weight: 700;
   cursor: auto;
   resize: none;
-}
-.columns .column__error {
-  color: red;
-  padding: 0px 5px;
-  font-size: 14px;
-  margin-top: 5px;
 }
 .columns .column__button, .columns .column__add {
   display: block;
@@ -123,14 +118,37 @@ body {
 }
 
 .row {
-  display: flex;
-  justify-content: space-between;
   background-color: #fff;
   width: 230px;
   min-height: 50px;
   border-radius: 4px;
   padding: 10px;
 }
+.row__headline {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.row__text {
+  color: #2c3134;
+  padding: 0px 5px;
+  margin: 0;
+  font-size: 15px;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: none;
+  font-weight: 700;
+  cursor: auto;
+  resize: none;
+}
 .row:hover .icons {
   visibility: visible;
+}
+
+.error-element {
+  color: red;
+  padding: 0px 5px;
+  font-size: 14px;
+  margin-top: 5px;
 }

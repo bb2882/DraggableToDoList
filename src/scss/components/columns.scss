@@ -17,6 +17,7 @@
 		&__headline {
 			display: flex;
 			justify-content: space-between;
+			align-items: flex-start;
 		}
 
 		&__header {
@@ -31,13 +32,6 @@
 			font-weight: 700;
 			cursor: auto;
 			resize: none;
-		}
-
-		&__error {
-			color: red;
-			padding: 0px 5px;
-			font-size: 14px;
-			margin-top: 5px;
 		}
 
 		&__button,
