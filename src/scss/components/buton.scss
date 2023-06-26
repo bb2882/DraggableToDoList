@@ -1,0 +1,37 @@
+.button {
+	display: block;
+		padding: 10px;
+		color: #343538;
+		font-family: Arial, sans-serif;
+		font-size: 14px;
+		text-decoration: none;
+		border: none;
+		background: none;
+		cursor: pointer;
+		position: relative;
+		margin: 0 auto;
+		font-size: 16px;
+		margin: 0;
+		margin-top: 10px;
+	
+		&::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: 2px;
+			background-color: #333;
+			transform: scaleX(0);
+			transition: transform 0.2s ease-in-out;
+		}
+	
+		&:hover::before {
+			transform: scaleX(1);
+		}
+	
+		span {
+			position: relative;
+			z-index: 1;
+		}
+}

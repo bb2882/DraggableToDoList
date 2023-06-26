@@ -52,40 +52,59 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     this.checkSrc = config.checkSrc;
                     this.errorElementPath = config.errorElementPath;
                     this.textareaLineLength = config.textareaLineLength;
+                    this.addElementPath = config.addElementPath;
+                    this.addElementText = config.addElementText;
+                    this.num = 1;
                 }
                 render(root) {
                     if (!root)
                         console.log("No root element found to display interface");
-                    root.append(this.createSection(this.template, this.className));
-                    this.addListenersOnTextarea(root.querySelector(this.textareaPath));
-                    this.initEvents(root);
+                    root.append(this.createSection());
+                    console.log('asd');
                 }
-                createSection(template, className) {
-                    let div = document.createElement('div');
-                    div.innerHTML = template;
-                    div.classList.add(className);
-                    return div;
+                createElement() {
+                    const element = document.createElement('div');
+                    const className = `${this.elementPath}__${this.num}`;
+                    element.innerHTML = this.template;
+                    element.classList.add(this.elementPath);
+                    element.classList.add(className);
+                    this.initEvents(element);
+                    if (this.addCard != undefined) {
+                        this.addCard(element);
+                    }
+                    this.num += 1;
+                    return element;
                 }
-                //Property 'events' does not exist on type 'ComponentBase'.
-                events() {
-                    return {};
+                createSection() {
+                    const wrapper = document.createElement('div');
+                    const button = this.createAddButton(wrapper);
+                    wrapper.append(button);
+                    wrapper.classList.add(this.className);
+                    return wrapper;
                 }
-                initEvents(root) {
-                    let events = this.events();
-                    if (Object.keys(events).length === 0)
-                        return;
-                    Object.keys(events).forEach(key => {
-                        var _a;
-                        let listener = key.split(' ');
-                        (_a = root
-                            .querySelector(listener[1])) === null || _a === void 0 ? void 0 : _a.addEventListener(listener[0], (e) => {
-                            //assigning method to a function to make sure it is a function and not a type 'never'
-                            //then binding context 'this' on function to make sure inner methods are going to work in it
-                            let func = this[events[key]];
-                            let method = func.bind(this);
-                            method(root);
-                        });
+                createAddButton(wrapper) {
+                    // <button class='column__add'>+ Add new column</button>
+                    const button = document.createElement('button');
+                    button.addEventListener('click', () => {
+                        const element = this.createElement();
+                        wrapper.insertBefore(element, button);
+                        this.changeTextareaName(element);
                     });
+                    button.classList.add('button');
+                    button.classList.add(this.addElementPath);
+                    button.innerText = this.addElementText;
+                    return button;
+                }
+                initEvents(element) {
+                    element.childNodes[1].childNodes[3].childNodes[1].addEventListener('click', () => {
+                        this.changeTextareaName(element);
+                    });
+                    element.childNodes[1].childNodes[3].childNodes[3].addEventListener('click', () => {
+                        this.deleteElement(element);
+                    });
+                }
+                //for column component
+                addCard(element) {
                 }
                 addListenersOnTextarea(textarea) {
                     this.addRow(textarea);
@@ -96,7 +115,6 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     textarea.addEventListener('keydown', (e) => {
                         if (e.key === 'Enter' && (e.shiftKey || e.code === 'Enter' || e.keyCode === 13)) {
                             e.preventDefault();
-                            console.log('times');
                         }
                     });
                 }
@@ -108,7 +126,6 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                         const value = textarea.value.trim();
                         const lines = value === '' ? 1 : Math.ceil(value.length / this.textareaLineLength);
                         textarea.rows = lines;
-                        console.log(lines);
                     });
                 }
                 disableSpace(textarea) {
@@ -140,47 +157,46 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     }
                     return true;
                 }
-                changeTextareaName(root) {
-                    console.log('workin');
-                    if ((root.querySelector(this.textareaPath) === null || undefined) || (root.querySelector(this.pencilPath) === null || undefined) ||
-                        (root.querySelector(this.errorElementPath) === null || undefined)) {
+                changeTextareaName(element) {
+                    if ((element.querySelector(`.${this.textareaPath}`) === null || undefined) || (element.querySelector(`.${this.pencilPath}`) === null || undefined) ||
+                        (element.querySelector(`.${this.errorElementPath}`) === null || undefined)) {
                         return;
                     }
-                    const header = root.querySelector(this.textareaPath);
-                    const icon = root.querySelector(this.pencilPath);
-                    const errorElement = root.querySelector(this.errorElementPath);
-                    header.value = header.value.trim();
+                    const textarea = element.querySelector(`.${this.textareaPath}`);
+                    const icon = element.querySelector(`.${this.pencilPath}`);
+                    const errorElement = element.querySelector(`.${this.errorElementPath}`);
+                    this.addListenersOnTextarea(textarea);
+                    textarea.value = textarea.value.trim();
                     if (icon.src === this.pencilSrc) {
-                        header.removeAttribute('readonly');
-                        header.focus();
-                        const valueLength = header.value.length;
-                        header.setSelectionRange(valueLength, valueLength);
-                        header.style.borderBottom = '1px solid #4b4e50';
+                        textarea.removeAttribute('readonly');
+                        textarea.focus();
+                        const valueLength = textarea.value.length;
+                        textarea.setSelectionRange(valueLength, valueLength);
+                        textarea.style.borderBottom = '1px solid #4b4e50';
                         this.changeIcon(icon, this.checkSrc);
                     }
                     else {
-                        if (!this.lengthCheck(header, errorElement))
+                        if (!this.lengthCheck(textarea, errorElement))
                             return;
-                        header.setAttribute('readonly', 'readonly');
-                        header.style.borderBottom = '0px';
+                        textarea.setAttribute('readonly', 'readonly');
+                        textarea.style.borderBottom = '0px';
                         this.changeIcon(icon, this.pencilSrc);
                     }
                 }
-                deleteElement(root) {
-                    if (root.querySelector(this.elementPath) === null || undefined) {
+                deleteElement(element) {
+                    if (element === null || undefined) {
                         return;
                     }
-                    const column = root.querySelector('.column');
-                    column.remove();
+                    element.remove();
                 }
             };
             exports_5("ComponentBase", ComponentBase);
         }
     };
 });
-System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], function (exports_6, context_6) {
+System.register("app/Components/RowComponent", ["framework/ComponentBase"], function (exports_6, context_6) {
     "use strict";
-    var ComponentBase_1, columnPath, headerPath, pencilPath, pencilSrc, checkSrc, errorElementPath, ColumnComponent, columnComponent;
+    var ComponentBase_1, RowComponent, rowComponent;
     var __moduleName = context_6 && context_6.id;
     return {
         setters: [
@@ -189,184 +205,94 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase"], f
             }
         ],
         execute: function () {
-            //cosntants
-            columnPath = '.column';
-            headerPath = '.column__header';
-            pencilPath = '.icon-pencil';
-            pencilSrc = 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg';
-            checkSrc = 'http://127.0.0.1:5500/dist/img/check.svg';
-            errorElementPath = '.column__error';
-            ColumnComponent = class ColumnComponent extends ComponentBase_1.ComponentBase {
+            RowComponent = class RowComponent extends ComponentBase_1.ComponentBase {
                 constructor(config) {
                     super(config);
                 }
-                events() {
-                    return {
-                        'click .column__icon-pencil': 'changeTextareaName',
-                        'click .column__icon-trash': 'deleteElement',
-                        'click .column__button': 'addCard'
-                    };
-                }
-                addCard() {
-                }
             };
-            exports_6("columnComponent", columnComponent = new ColumnComponent({
-                className: 'columns',
+            exports_6("rowComponent", rowComponent = new RowComponent({
+                className: 'rows',
                 template: `
-		<div class='column'>
-			<div class='column__headline'>
-				<textarea type='text' maxlength="45" cols='23' rows = '1' class='column__header' readonly>Name</textarea>
-				<div class='icons column__icons'>
-					<img class='icon icon-pencil column__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
-					<img class='icon icon-trash column__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
-				</div>
-			</div>
-			<div class='error-element column__error'></div>
+		<div class='row__headline'>
+			<textarea type='text' maxlength='220' cols='22' rows = '1' class='row__text' placeholder='Enter card details' readonly></textarea>
 
-			<button class='column__button'><span>+ Add new card</span></button>
+			<div class='icons row__icons'>
+				<img class='icon icon-pencil row__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
+				<img class='icon icon-trash row__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
+			</div>
 		</div>
 
-				<div class='column'>
-			<div class='column__headline'>
-				<textarea type='text' maxlength="45" cols='23' rows = '1' class='column__header' readonly>Name</textarea>
-				<div class='icons column__icons'>
-					<img class='icon icon-pencil column__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
-					<img class='icon icon-trash column__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
-				</div>
-			</div>
-			<div class='error-element column__error'></div>
-
-			<button class='column__button'><span>+ Add new card</span></button>
-		</div>
-
-				<div class='column'>
-			<div class='column__headline'>
-				<textarea type='text' maxlength="45" cols='23' rows = '1' class='column__header' readonly>Name</textarea>
-				<div class='icons column__icons'>
-					<img class='icon icon-pencil column__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
-					<img class='icon icon-trash column__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
-				</div>
-			</div>
-			<div class='error-element column__error'></div>
-
-			<button class='column__button'><span>+ Add new card</span></button>
-		</div>
-
-				<div class='column'>
-			<div class='column__headline'>
-				<textarea type='text' maxlength="45" cols='23' rows = '1' class='column__header' readonly>Name</textarea>
-				<div class='icons column__icons'>
-					<img class='icon icon-pencil column__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
-					<img class='icon icon-trash column__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
-				</div>
-			</div>
-			<div class='error-element column__error'></div>
-
-			<button class='column__button'><span>+ Add new card</span></button>
-			<button class='column__button'><span>+ Add new card</span></button>
-			<button class='column__button'><span>+ Add new card</span></button>
-			<button class='column__button'><span>+ Add new card</span></button>
-		</div>
-
-		<button class='column__add'>+ Add new column</button>
+		<div class='error-element row__error'></div>
 	`,
-                elementPath: '.column',
-                textareaPath: '.column__header',
-                pencilPath: '.column__icon-pencil',
+                elementPath: 'row',
+                textareaPath: 'row__text',
+                pencilPath: 'row__icon-pencil',
                 pencilSrc: 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg',
                 checkSrc: 'http://127.0.0.1:5500/dist/img/check.svg',
-                errorElementPath: '.column__error',
-                textareaLineLength: 23,
+                errorElementPath: 'row__error',
+                textareaLineLength: 22,
+                addElementPath: 'row__add',
+                addElementText: '+ Add new row'
             }));
         }
     };
 });
-System.register("app/Components/RowComponent", ["framework/ComponentBase"], function (exports_7, context_7) {
+System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "app/Components/RowComponent"], function (exports_7, context_7) {
     "use strict";
-    var ComponentBase_2, RowComponent, rowComponent;
+    var ComponentBase_2, RowComponent_1, ColumnComponent, columnComponent;
     var __moduleName = context_7 && context_7.id;
     return {
         setters: [
             function (ComponentBase_2_1) {
                 ComponentBase_2 = ComponentBase_2_1;
+            },
+            function (RowComponent_1_1) {
+                RowComponent_1 = RowComponent_1_1;
             }
         ],
         execute: function () {
-            RowComponent = class RowComponent extends ComponentBase_2.ComponentBase {
+            ColumnComponent = class ColumnComponent extends ComponentBase_2.ComponentBase {
                 constructor(config) {
                     super(config);
                 }
-                events() {
-                    return {
-                        'click .row__icon-pencil': 'changeTextareaName',
-                        'click .row__icon-trash': 'deleteElement'
-                    };
+                addCard(element) {
+                    RowComponent_1.rowComponent.render(element);
                 }
             };
-            exports_7("rowComponent", rowComponent = new RowComponent({
-                className: 'rows',
+            exports_7("columnComponent", columnComponent = new ColumnComponent({
+                className: 'columns',
                 template: `
-		<div class='row'>
-			<div class='row__headline'>
-				<textarea type='text' maxlength='220' cols='22' rows = '1' class='row__text' readonly>aaaaaaa</textarea>
-
-				<div class='icons row__icons'>
-					<img class='icon icon-pencil row__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
-					<img class='icon icon-trash row__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
+			<div class='column__headline'>
+				<textarea type='text' maxlength="45" cols='23' rows = '1' class='column__header' placeholder='Enter header for column' readonly></textarea>
+				<div class='icons column__icons'>
+					<img class='icon icon-pencil column__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
+					<img class='icon icon-trash column__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
 				</div>
 			</div>
+			<div class='error-element column__error'></div>
 
-			<div class='error-element row__error'></div>
-		</div>
-
-				<div class='row'>
-			<div class='row__headline'>
-				<textarea type='text' maxlength='220' cols='22' rows = '1' class='row__text' readonly>aaaaaaa</textarea>
-
-				<div class='icons row__icons'>
-					<img class='icon icon-pencil row__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
-					<img class='icon icon-trash row__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
-				</div>
-			</div>
-
-			<div class='error-element row__error'></div>
-		</div>
-
-				<div class='row'>
-			<div class='row__headline'>
-				<textarea type='text' maxlength='220' cols='22' rows = '1' class='row__text' readonly>aaaaaaa</textarea>
-
-				<div class='icons row__icons'>
-					<img class='icon icon-pencil row__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
-					<img class='icon icon-trash row__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
-				</div>
-			</div>
-
-			<div class='error-element row__error'></div>
-		</div>
 	`,
-                elementPath: '.row',
-                textareaPath: '.row__text',
-                pencilPath: '.row__icon-pencil',
+                elementPath: 'column',
+                textareaPath: 'column__header',
+                pencilPath: 'column__icon-pencil',
                 pencilSrc: 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg',
                 checkSrc: 'http://127.0.0.1:5500/dist/img/check.svg',
-                errorElementPath: '.row__error',
-                textareaLineLength: 22
+                errorElementPath: 'column__error',
+                textareaLineLength: 23,
+                addElementPath: 'column__add',
+                addElementText: '+ Add new column'
             }));
         }
     };
 });
-System.register("app/app.module", ["app/Components/ColumnComponent", "app/Components/RowComponent"], function (exports_8, context_8) {
+System.register("app/app.module", ["app/Components/ColumnComponent"], function (exports_8, context_8) {
     "use strict";
-    var ColumnComponent_1, RowComponent_1, AppModule, appModule;
+    var ColumnComponent_1, AppModule, appModule;
     var __moduleName = context_8 && context_8.id;
     return {
         setters: [
             function (ColumnComponent_1_1) {
                 ColumnComponent_1 = ColumnComponent_1_1;
-            },
-            function (RowComponent_1_1) {
-                RowComponent_1 = RowComponent_1_1;
             }
         ],
         execute: function () {
@@ -384,8 +310,7 @@ System.register("app/app.module", ["app/Components/ColumnComponent", "app/Compon
             };
             exports_8("appModule", appModule = new AppModule({
                 components: [
-                    ColumnComponent_1.columnComponent,
-                    RowComponent_1.rowComponent
+                    ColumnComponent_1.columnComponent
                 ],
             }));
         }

@@ -11,6 +11,9 @@ export class ComponentBase implements ComponentBaseInterface {
 	readonly checkSrc: string
 	readonly errorElementPath: string
 	readonly textareaLineLength: number
+	readonly addElementPath: string
+	readonly addElementText: string
+	public num: number
 
 	constructor(config: ComponentConfigInterface) {
 		this.className = config.className
@@ -22,44 +25,65 @@ export class ComponentBase implements ComponentBaseInterface {
 		this.checkSrc = config.checkSrc
 		this.errorElementPath = config.errorElementPath
 		this.textareaLineLength = config.textareaLineLength
+		this.addElementPath = config.addElementPath
+		this.addElementText = config.addElementText
+		this.num = 1
 	}
 
 	render(root: HTMLDivElement) {
 		if (!root) console.log("No root element found to display interface")
-		root.append(this.createSection(this.template, this.className))
-		this.addListenersOnTextarea(root.querySelector(this.textareaPath) as HTMLTextAreaElement)
-		this.initEvents(root)
+		root.append(this.createSection())
+		console.log('asd')
 	}
 
-	createSection(template: string, className: string) {
-		let div = document.createElement('div') as HTMLDivElement
-		div.innerHTML = template
-		div.classList.add(className);
-		return div
+	createElement() {
+		const element = document.createElement('div') as HTMLDivElement
+		const className = `${this.elementPath}__${this.num}`
+		element.innerHTML = this.template
+		element.classList.add(this.elementPath);
+		element.classList.add(className);
+		this.initEvents(element)
+		if(this.addCard != undefined) {
+			this.addCard(element)
+		}
+		this.num += 1
+		return element
 	}
 
-	//Property 'events' does not exist on type 'ComponentBase'.
-	events() {
-		return {}
+	createSection() {
+		const wrapper = document.createElement('div') as HTMLDivElement
+		const button = this.createAddButton(wrapper)
+		wrapper.append(button)
+		wrapper.classList.add(this.className);
+		return wrapper
 	}
 
-	initEvents(root: HTMLDivElement) {
-		let events: object = this.events()
-
-		if (Object.keys(events).length === 0) return
-
-		Object.keys(events).forEach(key => {
-			let listener = key.split(' ')
-			root
-				.querySelector(listener[1])
-				?.addEventListener(listener[0], (e: Event) => {
-					//assigning method to a function to make sure it is a function and not a type 'never'
-					//then binding context 'this' on function to make sure inner methods are going to work in it
-					let func: (root: HTMLDivElement) => void = this[events[key as keyof typeof events]]
-					let method = func.bind(this)
-					method(root)
-				})
+	createAddButton(wrapper: HTMLDivElement): HTMLButtonElement {
+		// <button class='column__add'>+ Add new column</button>
+		const button = document.createElement('button')
+		button.addEventListener('click', () => {
+			const element = this.createElement()
+			wrapper.insertBefore(element, button)
+			this.changeTextareaName(element)
 		})
+		button.classList.add('button')
+		button.classList.add(this.addElementPath)
+		button.innerText = this.addElementText 
+		return button
+	}
+
+	initEvents(element: HTMLDivElement) {
+		element.childNodes[1].childNodes[3].childNodes[1].addEventListener('click', () => {
+			this.changeTextareaName(element)
+		})
+		element.childNodes[1].childNodes[3].childNodes[3].addEventListener('click', () => {
+			this.deleteElement(element)
+		})
+	}
+
+	//for column component
+	addCard(element: HTMLDivElement) {
+
 	}
 
 	addListenersOnTextarea(textarea: HTMLTextAreaElement) {
@@ -73,7 +97,6 @@ export class ComponentBase implements ComponentBaseInterface {
 		textarea.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter' && (e.shiftKey || e.code === 'Enter' || e.keyCode === 13)) {
 				e.preventDefault();
-				console.log('times')
 			}
 		})
 	}
@@ -87,7 +110,6 @@ export class ComponentBase implements ComponentBaseInterface {
 			const value = textarea.value.trim();
 			const lines = value === '' ? 1 : Math.ceil(value.length / this.textareaLineLength);
 			textarea.rows = lines;
-			console.log(lines)
 		});
 	}
 
@@ -129,41 +151,40 @@ export class ComponentBase implements ComponentBaseInterface {
 		return true
 	}
 
-	changeTextareaName(root: HTMLDivElement) {
-		console.log('workin')
-		if ((root.querySelector(this.textareaPath) === null || undefined) || (root.querySelector(this.pencilPath) === null || undefined) ||
-			(root.querySelector(this.errorElementPath) === null || undefined)) {
+	changeTextareaName(element: HTMLDivElement) {
+		if ((element.querySelector(`.${this.textareaPath}`) === null || undefined) || (element.querySelector(`.${this.pencilPath}`) === null || undefined) ||
+		(element.querySelector(`.${this.errorElementPath}`) === null || undefined)) {
 			return
 		}
 
-		const header = root.querySelector(this.textareaPath) as HTMLTextAreaElement
-		const icon = root.querySelector(this.pencilPath) as HTMLImageElement
-		const errorElement = root.querySelector(this.errorElementPath) as HTMLDivElement
+		const textarea = element.querySelector(`.${this.textareaPath}`) as HTMLTextAreaElement
+		const icon = element.querySelector(`.${this.pencilPath}`) as HTMLImageElement
+		const errorElement = element.querySelector(`.${this.errorElementPath}`) as HTMLDivElement
 
-		header.value = header.value.trim()
+		this.addListenersOnTextarea(textarea)
+
+		textarea.value = textarea.value.trim()
 
 		if (icon.src === this.pencilSrc) {
-			header.removeAttribute('readonly')
-			header.focus()
+			textarea.removeAttribute('readonly')
+			textarea.focus()
 
-			const valueLength = header.value.length;
-			header.setSelectionRange(valueLength, valueLength);
-			header.style.borderBottom = '1px solid #4b4e50'
+			const valueLength = textarea.value.length;
+			textarea.setSelectionRange(valueLength, valueLength);
+			textarea.style.borderBottom = '1px solid #4b4e50'
 			this.changeIcon(icon, this.checkSrc)
 		} else {
-			if (!this.lengthCheck(header, errorElement)) return
-			header.setAttribute('readonly', 'readonly')
-			header.style.borderBottom = '0px'
+			if (!this.lengthCheck(textarea, errorElement)) return
+			textarea.setAttribute('readonly', 'readonly')
+			textarea.style.borderBottom = '0px'
 			this.changeIcon(icon, this.pencilSrc)
 		}
 	}
 
-	deleteElement(root: HTMLDivElement) {
-		if (root.querySelector(this.elementPath) === null || undefined) {
+	deleteElement(element: HTMLDivElement) {
+		if (element === null || undefined) {
 			return
 		}
-
-		const column = root.querySelector('.column') as HTMLDivElement
-		column.remove()
+		element.remove()
 	}
 }

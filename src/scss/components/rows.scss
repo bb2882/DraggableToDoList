@@ -1,13 +1,16 @@
 .rows {
-
+	margin-top: 10px;
+	position: relative;
 }
 
 .row {
-	background-color: #fff;
+	background-color: #ecf0f1;
 	width: 230px;
-	min-height: 50px;
+	min-height: 40px;
 	border-radius: 4px;
 	padding: 10px;
+	margin-top: 5px;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 	
 	&__headline {
 		display: flex;
@@ -27,11 +30,27 @@
 		font-weight: 700;
 		cursor: auto;
 		resize: none;
+
+	}
+
+	&__add {
+		color: #343538;
+		font-size: 14px;
+		margin: 10px auto;
+		margin-bottom: 0;
+
+		&::before {
+			background-color: #343538;
 		}
+	}
 
 	&:hover {
-		.icons {
+		.row__icons {
 			visibility: visible;
+		}
+
+		.column__icons {
+			display: none;
 		}
 	}
 }

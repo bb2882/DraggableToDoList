@@ -22,7 +22,6 @@ class AppModule implements ModuleInterface {
 
 export const appModule = new AppModule({
 	components: [
-		columnComponent,
-		rowComponent
+		columnComponent
 	],
 })
