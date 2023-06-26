@@ -6,18 +6,15 @@
 
 	.column {
 		padding: 10px;
-		padding-right: 0;
-		width: 265px;
+		width: 280px;
 		background-color: #e3e3e3;
 		max-height: 90vh;
-		overflow: auto;
-		overflow-y: scroll;
 		border-radius: 4px;
 		min-height: 60px;
 
 		&__headline {
 			display: flex;
-			justify-content: space-between;
+			justify-content: space-around;
 			align-items: flex-start;
 
 			&:hover {

@@ -60,7 +60,6 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     if (!root)
                         console.log("No root element found to display interface");
                     root.append(this.createSection());
-                    console.log('asd');
                 }
                 createElement() {
                     const element = document.createElement('div');

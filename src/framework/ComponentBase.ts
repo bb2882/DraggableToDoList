@@ -33,7 +33,6 @@ export class ComponentBase implements ComponentBaseInterface {
 	render(root: HTMLDivElement) {
 		if (!root) console.log("No root element found to display interface")
 		root.append(this.createSection())
-		console.log('asd')
 	}
 
 	createElement() {
