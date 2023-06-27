@@ -1,6 +1,6 @@
 
 .rows {
-	margin-top: 10px;
+	margin-top: 5px;
 	position: relative;
 	overflow-y: scroll;
 	overflow-x: hidden;
@@ -14,6 +14,7 @@
 	border-radius: 4px;
 	padding: 10px;
 	margin-top: 5px;
+	margin-right: 0;
 	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 	
 	&__headline {

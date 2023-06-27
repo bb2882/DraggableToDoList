@@ -262,7 +262,7 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "a
                 className: 'columns',
                 template: `
 			<div class='column__headline'>
-				<textarea type='text' maxlength="45" cols='23' rows = '1' class='column__header' placeholder='Enter header for column' readonly></textarea>
+				<textarea type='text' maxlength="48" cols='23' rows = '1' class='column__header' placeholder='Enter header for column' readonly></textarea>
 				<div class='icons column__icons'>
 					<img class='icon icon-pencil column__icon-pencil' src='/dist/img/pencil-svgrepo-com.svg'></img>
 					<img class='icon icon-trash column__icon-trash' src='/dist/img/trash-2-svgrepo-com.svg'></img>
@@ -277,7 +277,7 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "a
                 pencilSrc: 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg',
                 checkSrc: 'http://127.0.0.1:5500/dist/img/check.svg',
                 errorElementPath: 'column__error',
-                textareaLineLength: 23,
+                textareaLineLength: 25,
                 addElementPath: 'column__add',
                 addElementText: '+ Add new column'
             }));
