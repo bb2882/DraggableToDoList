@@ -36,10 +36,3 @@ export const columnComponent = new ColumnComponent({
 	addElementText: '+ Add new column'
 	
 })
-
-// const columnPath = '.column'
-// const headerPath = '.column__header'
-// const pencilPath = '.icon-pencil'
-// const pencilSrc = 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg'
-// const checkSrc = 'http://127.0.0.1:5500/dist/img/check.svg'
-// const errorElementPath = '.column__error'

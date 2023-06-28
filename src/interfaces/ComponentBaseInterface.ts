@@ -3,5 +3,16 @@ export interface ComponentBaseInterface {
 	template: string,
 	render(root: HTMLElement): void,
 	createSection(template: string, className: string): HTMLDivElement,
-	initEvents(root: HTMLDivElement): void 
+	createElement(): HTMLDivElement,
+	createAddButton(wrapper: HTMLDivElement): HTMLButtonElement,
+	initEvents(root: HTMLDivElement): void,
+	addCard(element: HTMLDivElement): void,
+	addListenersOnTextarea(textarea: HTMLTextAreaElement): void,
+	preventLineBreak(textarea: HTMLTextAreaElement): void,
+	changeIcon(icon: HTMLImageElement, src: string): void,
+	addRow(textarea: HTMLTextAreaElement): void,
+	disableSpace(textarea: HTMLTextAreaElement): void,
+	lengthCheck(textarea: HTMLTextAreaElement, errorElement: HTMLDivElement): boolean,
+	changeTextareaName(element: HTMLDivElement): void,
+	deleteElement(element: HTMLDivElement): void,
 }

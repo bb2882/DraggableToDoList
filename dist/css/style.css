@@ -170,9 +170,6 @@ body {
 .row:hover .row__icons {
   visibility: visible;
 }
-.row:hover .column__icons {
-  display: none;
-}
 
 .error-element {
   color: red;

@@ -35,7 +35,7 @@ export class ComponentBase implements ComponentBaseInterface {
 		root.append(this.createSection())
 	}
 
-	createElement() {
+	createElement(): HTMLDivElement {
 		const element = document.createElement('div') as HTMLDivElement
 		const className = `${this.elementPath}__${this.num}`
 		element.innerHTML = this.template
@@ -49,7 +49,7 @@ export class ComponentBase implements ComponentBaseInterface {
 		return element
 	}
 
-	createSection() {
+	createSection(): HTMLDivElement {
 		const wrapper = document.createElement('div') as HTMLDivElement
 		const button = this.createAddButton(wrapper)
 		wrapper.append(button)

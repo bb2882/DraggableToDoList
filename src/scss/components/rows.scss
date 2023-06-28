@@ -1,4 +1,3 @@
-
 .rows {
 	margin-top: 5px;
 	position: relative;
@@ -52,10 +51,6 @@
 	&:hover {
 		.row__icons {
 			visibility: visible;
-		}
-
-		.column__icons {
-			display: none;
 		}
 	}
 }
