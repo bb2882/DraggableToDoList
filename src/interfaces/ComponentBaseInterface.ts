@@ -2,7 +2,7 @@ export interface ComponentBaseInterface {
 	className: string,
 	template: string,
 	render(root: HTMLElement): void,
-	createSection(template: string, className: string): HTMLDivElement,
+	createSection(): HTMLDivElement,
 	createElement(): HTMLDivElement,
 	createAddButton(wrapper: HTMLDivElement): HTMLButtonElement,
 	initEvents(root: HTMLDivElement): void,

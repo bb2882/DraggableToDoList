@@ -42,9 +42,7 @@ export class ComponentBase implements ComponentBaseInterface {
 		element.classList.add(this.elementPath);
 		element.classList.add(className);
 		this.initEvents(element)
-		if(this.addCard != undefined) {
-			this.addCard(element)
-		}
+		this.addCard(element)
 		this.num += 1
 		return element
 	}
@@ -58,7 +56,6 @@ export class ComponentBase implements ComponentBaseInterface {
 	}
 
 	createAddButton(wrapper: HTMLDivElement): HTMLButtonElement {
-		// <button class='column__add'>+ Add new column</button>
 		const button = document.createElement('button')
 		button.addEventListener('click', () => {
 			const element = this.createElement()
@@ -72,12 +69,7 @@ export class ComponentBase implements ComponentBaseInterface {
 	}
 
 	initEvents(element: HTMLDivElement) {
-		element.childNodes[1].childNodes[3].childNodes[1].addEventListener('click', () => {
-			this.changeTextareaName(element)
-		})
-		element.childNodes[1].childNodes[3].childNodes[3].addEventListener('click', () => {
-			this.deleteElement(element)
-		})
+
 	}
 
 	//for column component
