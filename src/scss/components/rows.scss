@@ -3,17 +3,17 @@
 	position: relative;
 	overflow-y: scroll;
 	overflow-x: hidden;
-	max-height: 85vh;
+	max-height: 90vh;
 }
 
 .row {
 	background-color: #ecf0f1;
-	width: 230px;
+	// width: 230px;
 	min-height: 40px;
 	border-radius: 4px;
 	padding: 10px;
 	margin-top: 5px;
-	margin-right: 0;
+	margin-right: 8px;
 	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 	transition: background-color .3s ease;
 	
@@ -35,7 +35,6 @@
 		font-weight: 700;
 		cursor: auto;
 		resize: none;
-
 	}
 
 	&__add {

@@ -20,25 +20,87 @@ class RowComponent extends ComponentBase {
 		element.addEventListener('dragend', (e) => {
 			this.dragEnd(e, element)
 		})
-		element.addEventListener('dragover', this.dragOver)
-		element.addEventListener('drop', this.drop)
-		element.addEventListener('dragenter', this.dragEnter)
-		element.addEventListener('dragleave', this.dragLeave)
 	}
 
 	dragStart(event: DragEvent, element: HTMLDivElement): void {
 		// console.log('Event:', 'dragStart')
 		element.classList.add('dragging')
-
+		setTimeout(() => {
+			element.style.backgroundColor = '#c2c2c2'
+			element.querySelector('.row__headline')?.style.visibility = 'hidden'
+			document.querySelectorAll('.row__icons').forEach(icon => {
+				icon.style.opacity = '0'
+			})
+		}, 0)
 	}
 
 	dragEnd(event: DragEvent, element: HTMLDivElement): void {
-		// console.log('Event:', 'dragEnd')
+		// console.log('Event:', 'dragEnd')#ecf0f1
 		element.classList.remove('dragging')
+		element.style.backgroundColor = '#ecf0f1'
+		element.querySelector('.row__headline')?.style.visibility = 'visible'
+		document.querySelectorAll('.row__icons').forEach(icon => {
+			icon.style.opacity = '1'
+		})
 	}
 
-	dragOver(event: DragEvent): void {
-		// console.log('Event:', 'dragOver')
+	dragOver(event: DragEvent, wrapper: HTMLDivElement): void {
+		const bottomTask = this.insertAboveTask(wrapper, event.clientY)
+		const curTask = document.querySelector('.dragging')
+		const lastChild = wrapper.lastElementChild;
+
+		if(!bottomTask) {
+			wrapper.insertBefore(curTask!, lastChild)
+		} else {
+			wrapper.insertBefore(curTask!, bottomTask)
+		}
+
+		const scrollThreshold = 50;
+		const containerRect = wrapper.getBoundingClientRect();
+		const isNearTop = (event.clientY - containerRect.top) < scrollThreshold;
+		const isNearBottom = (containerRect.bottom - event.clientY) < scrollThreshold;
+
+		if (isNearTop) {
+			// Calculate the scroll speed based on the distance from the top
+			const scrollSpeed = (scrollThreshold - (event.clientY - containerRect.top)) / scrollThreshold;
+			const scrollAmount = scrollSpeed * 3
+
+			// Scroll the container upwards with a smooth behavior
+			wrapper.scrollTo({
+				top: wrapper.scrollTop - scrollAmount,
+				behavior: 'smooth'
+			});
+		} else if (isNearBottom) {
+			// Calculate the scroll speed based on the distance from the bottom
+			const scrollSpeed = (scrollThreshold - (containerRect.bottom - event.clientY)) / scrollThreshold;
+			const scrollAmount = scrollSpeed * 3
+
+			// Scroll the container downwards with a smooth behavior
+			wrapper.scrollTo({
+				top: wrapper.scrollTop + scrollAmount,
+				behavior: 'smooth'
+			});
+		}
+	}
+
+	insertAboveTask(wrapper: HTMLDivElement, mouseY : number) {
+		const els = wrapper.querySelectorAll('.row:not(.dragging)')
+
+		let closestTask: null | Element = null
+		let closestOffset = Number.NEGATIVE_INFINITY
+
+		els.forEach(task => {
+			const {top} = task.getBoundingClientRect()
+
+			const offset = mouseY - top - 40 
+
+			if (offset < 0 && offset > closestOffset) {
+				closestOffset = offset
+				closestTask = task
+			}
+		})
+
+		return closestTask
 
 	}
 
@@ -62,6 +124,9 @@ class RowComponent extends ComponentBase {
 		const button = this.createAddButton(wrapper)
 		wrapper.append(button)
 		wrapper.classList.add(this.className);
+		wrapper.addEventListener('dragover', (e) => {
+			this.dragOver(e, wrapper)
+		})
 		return wrapper
 	}
 

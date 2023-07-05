@@ -34,9 +34,12 @@
 }
 
 body {
-  white-space: nowrap;
-  overflow: auto;
+  box-sizing: border-box;
+  overflow-y: hidden;
+  overflow-x: auto;
   background-color: #023e3e;
+  height: 100vh;
+  margin: 0;
 }
 
 ::-webkit-scrollbar {
@@ -66,6 +69,8 @@ body {
 }
 
 .columns {
+  padding: 10px;
+  white-space: nowrap;
   display: flex;
   justify-content: flex-start;
   gap: 10px;
@@ -127,17 +132,16 @@ body {
   position: relative;
   overflow-y: scroll;
   overflow-x: hidden;
-  max-height: 85vh;
+  max-height: 90vh;
 }
 
 .row {
   background-color: #ecf0f1;
-  width: 230px;
   min-height: 40px;
   border-radius: 4px;
   padding: 10px;
   margin-top: 5px;
-  margin-right: 0;
+  margin-right: 8px;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   transition: background-color 0.3s ease;
 }
@@ -180,5 +184,6 @@ body {
 }
 
 .dragging {
-  background-color: #d3d3d3;
+  box-shadow: none;
+  opacity: 0.999;
 }

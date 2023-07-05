@@ -1,7 +1,10 @@
 body {
-	white-space: nowrap;
-	overflow: auto;
+	box-sizing: border-box;
+	overflow-y: hidden;
+	overflow-x: auto;
 	background-color: #023e3e;
+	height: 100vh;
+	margin: 0;
 }
 
 ::-webkit-scrollbar {

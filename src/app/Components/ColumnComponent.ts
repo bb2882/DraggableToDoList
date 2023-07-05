@@ -39,8 +39,8 @@ export const columnComponent = new ColumnComponent({
 				<img class='icon icon-trash column__icon-trash' draggable="false" src='/dist/img/trash-2-svgrepo-com.svg'></img>
 			</div>
 		</div>
-		<div class='error-element column__error'></div>
 
+		<div class='error-element column__error'></div>
 	`,
 	elementPath: 'column',
 	textareaPath: 'column__header',
