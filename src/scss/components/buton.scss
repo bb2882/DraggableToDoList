@@ -29,9 +29,4 @@
 	&:hover::before {
 		transform: scaleX(1);
 	}
-
-	span {
-		position: relative;
-		z-index: 1;
-	}
 }

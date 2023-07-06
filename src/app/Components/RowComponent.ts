@@ -2,17 +2,14 @@ import { ComponentBase } from '../../framework/ComponentBase';
 import { ComponentConfigInterface } from '../../interfaces/ComponentConfigInterface';
 
 class RowComponent extends ComponentBase {
+	readonly rowIconsPath: string
 	constructor(config: ComponentConfigInterface) {
 		super(config)
+		this.rowIconsPath = 'row__icons'
 	}
 
 	initEvents(element: HTMLDivElement) {
-		element.childNodes[1].childNodes[3].childNodes[1].addEventListener('click', () => {
-			this.changeTextareaName(element)
-		})
-		element.childNodes[1].childNodes[3].childNodes[3].addEventListener('click', () => {
-			this.deleteElement(element)
-		})
+		this.childEvents(element)
 		element.draggable = true
 		element.addEventListener('dragstart', (e) => {
 			this.dragStart(e, element)
@@ -22,25 +19,35 @@ class RowComponent extends ComponentBase {
 		})
 	}
 
+	createSection(): HTMLDivElement {
+		const wrapper = document.createElement('div') as HTMLDivElement
+		const button = this.createAddButton(wrapper)
+		wrapper.append(button)
+		wrapper.classList.add(this.className);
+		wrapper.addEventListener('dragover', (e) => {
+			this.dragOver(e, wrapper)
+		})
+		return wrapper
+	}
+
 	dragStart(event: DragEvent, element: HTMLDivElement): void {
-		// console.log('Event:', 'dragStart')
 		element.classList.add('dragging')
 		setTimeout(() => {
-			element.style.backgroundColor = '#c2c2c2'
-			element.querySelector('.row__headline')?.style.visibility = 'hidden'
-			document.querySelectorAll('.row__icons').forEach(icon => {
-				icon.style.opacity = '0'
-			})
+			element.classList.add('hidden')
+			this.iconsOpacity(0)
 		}, 0)
 	}
 
 	dragEnd(event: DragEvent, element: HTMLDivElement): void {
-		// console.log('Event:', 'dragEnd')#ecf0f1
 		element.classList.remove('dragging')
-		element.style.backgroundColor = '#ecf0f1'
-		element.querySelector('.row__headline')?.style.visibility = 'visible'
-		document.querySelectorAll('.row__icons').forEach(icon => {
-			icon.style.opacity = '1'
+		element.classList.remove('hidden')
+		this.iconsOpacity(1)
+	}
+
+	iconsOpacity(num: number) {
+		const icons = document.querySelectorAll(`.${this.rowIconsPath}`) as NodeListOf<HTMLImageElement>
+		icons.forEach((icon: HTMLImageElement) => {
+			icon.style.opacity = `${num}`
 		})
 	}
 
@@ -84,7 +91,7 @@ class RowComponent extends ComponentBase {
 	}
 
 	insertAboveTask(wrapper: HTMLDivElement, mouseY : number) {
-		const els = wrapper.querySelectorAll('.row:not(.dragging)')
+		const els = wrapper.querySelectorAll(`.${this.elementPath}:not(.dragging)`)
 
 		let closestTask: null | Element = null
 		let closestOffset = Number.NEGATIVE_INFINITY
@@ -102,32 +109,6 @@ class RowComponent extends ComponentBase {
 
 		return closestTask
 
-	}
-
-	drop(event: DragEvent): void {
-		// console.log('Event:', 'drop')
-
-	}
-
-	dragEnter(event: DragEvent): void {
-		// console.log('Event:', 'dragEnter')
-
-	}
-
-	dragLeave(event: DragEvent): void {
-		// console.log('Event:', 'dragLeave')
-
-	}
-
-	createSection(): HTMLDivElement {
-		const wrapper = document.createElement('div') as HTMLDivElement
-		const button = this.createAddButton(wrapper)
-		wrapper.append(button)
-		wrapper.classList.add(this.className);
-		wrapper.addEventListener('dragover', (e) => {
-			this.dragOver(e, wrapper)
-		})
-		return wrapper
 	}
 
 }
@@ -149,10 +130,11 @@ export const rowComponent = new RowComponent({
 	elementPath: 'row',
 	textareaPath: 'row__text',
 	pencilPath: 'row__icon-pencil',
-	pencilSrc: 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg',
-	checkSrc: 'http://127.0.0.1:5500/dist/img/check.svg',
+	pencilSrc: '/dist/img/pencil-svgrepo-com.svg',
+	checkSrc: '/dist/img/check.svg',
 	errorElementPath: 'row__error',
+	trashPath: 'row__icon-trash',
 	textareaLineLength: 22,
 	addElementPath: 'row__add',
-	addElementText: '+ Add new row'
+	addElementText: '+ Add new row',
 })

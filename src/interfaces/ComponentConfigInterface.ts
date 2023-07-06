@@ -7,6 +7,7 @@ export interface ComponentConfigInterface {
 	pencilSrc: string,
 	checkSrc: string,
 	errorElementPath: string,
+	trashPath: string,
 	addElementPath: string,
 	addElementText: string,
 	textareaLineLength: number,

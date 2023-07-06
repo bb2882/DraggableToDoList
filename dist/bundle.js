@@ -51,6 +51,7 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     this.pencilSrc = config.pencilSrc;
                     this.checkSrc = config.checkSrc;
                     this.errorElementPath = config.errorElementPath;
+                    this.trashPath = config.trashPath;
                     this.textareaLineLength = config.textareaLineLength;
                     this.addElementPath = config.addElementPath;
                     this.addElementText = config.addElementText;
@@ -68,7 +69,6 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     element.classList.add(this.elementPath);
                     element.classList.add(className);
                     this.initEvents(element);
-                    this.addCard(element);
                     this.num += 1;
                     return element;
                 }
@@ -93,8 +93,15 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                 }
                 initEvents(element) {
                 }
-                //for column component
-                addCard(element) {
+                childEvents(element) {
+                    element.addEventListener('click', (e) => {
+                        if (e.target.matches(`.${this.pencilPath}`)) {
+                            this.changeTextareaName(element);
+                        }
+                        else if (e.target.matches(`.${this.trashPath}`)) {
+                            this.deleteElement(element);
+                        }
+                    });
                 }
                 addListenersOnTextarea(textarea) {
                     this.addRow(textarea);
@@ -138,7 +145,7 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     if (textarea.value.length === 0) {
                         textarea.focus();
                         textarea.style.borderBottom = '1px solid red';
-                        errorElement.innerText = 'must have at least 1 character';
+                        errorElement.innerText = 'Please, Fill Out This Field';
                         return false;
                     }
                     if (textarea.style.borderBottom || errorElement.innerText !== '') {
@@ -157,7 +164,7 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     const errorElement = element.querySelector(`.${this.errorElementPath}`);
                     this.addListenersOnTextarea(textarea);
                     textarea.value = textarea.value.trim();
-                    if (icon.src === this.pencilSrc) {
+                    if (new URL(icon.src).pathname === this.pencilSrc) {
                         textarea.removeAttribute('readonly');
                         textarea.focus();
                         const valueLength = textarea.value.length;
@@ -198,14 +205,10 @@ System.register("app/Components/RowComponent", ["framework/ComponentBase"], func
             RowComponent = class RowComponent extends ComponentBase_1.ComponentBase {
                 constructor(config) {
                     super(config);
+                    this.rowIconsPath = 'row__icons';
                 }
                 initEvents(element) {
-                    element.childNodes[1].childNodes[3].childNodes[1].addEventListener('click', () => {
-                        this.changeTextareaName(element);
-                    });
-                    element.childNodes[1].childNodes[3].childNodes[3].addEventListener('click', () => {
-                        this.deleteElement(element);
-                    });
+                    this.childEvents(element);
                     element.draggable = true;
                     element.addEventListener('dragstart', (e) => {
                         this.dragStart(e, element);
@@ -214,26 +217,32 @@ System.register("app/Components/RowComponent", ["framework/ComponentBase"], func
                         this.dragEnd(e, element);
                     });
                 }
+                createSection() {
+                    const wrapper = document.createElement('div');
+                    const button = this.createAddButton(wrapper);
+                    wrapper.append(button);
+                    wrapper.classList.add(this.className);
+                    wrapper.addEventListener('dragover', (e) => {
+                        this.dragOver(e, wrapper);
+                    });
+                    return wrapper;
+                }
                 dragStart(event, element) {
-                    // console.log('Event:', 'dragStart')
                     element.classList.add('dragging');
                     setTimeout(() => {
-                        var _a;
-                        element.style.backgroundColor = '#c2c2c2';
-                        (_a = element.querySelector('.row__headline')) === null || _a === void 0 ? void 0 : _a.style.visibility = 'hidden';
-                        document.querySelectorAll('.row__icons').forEach(icon => {
-                            icon.style.opacity = '0';
-                        });
+                        element.classList.add('hidden');
+                        this.iconsOpacity(0);
                     }, 0);
                 }
                 dragEnd(event, element) {
-                    var _a;
-                    // console.log('Event:', 'dragEnd')#ecf0f1
                     element.classList.remove('dragging');
-                    element.style.backgroundColor = '#ecf0f1';
-                    (_a = element.querySelector('.row__headline')) === null || _a === void 0 ? void 0 : _a.style.visibility = 'visible';
-                    document.querySelectorAll('.row__icons').forEach(icon => {
-                        icon.style.opacity = '1';
+                    element.classList.remove('hidden');
+                    this.iconsOpacity(1);
+                }
+                iconsOpacity(num) {
+                    const icons = document.querySelectorAll(`.${this.rowIconsPath}`);
+                    icons.forEach((icon) => {
+                        icon.style.opacity = `${num}`;
                     });
                 }
                 dragOver(event, wrapper) {
@@ -272,7 +281,7 @@ System.register("app/Components/RowComponent", ["framework/ComponentBase"], func
                     }
                 }
                 insertAboveTask(wrapper, mouseY) {
-                    const els = wrapper.querySelectorAll('.row:not(.dragging)');
+                    const els = wrapper.querySelectorAll(`.${this.elementPath}:not(.dragging)`);
                     let closestTask = null;
                     let closestOffset = Number.NEGATIVE_INFINITY;
                     els.forEach(task => {
@@ -284,25 +293,6 @@ System.register("app/Components/RowComponent", ["framework/ComponentBase"], func
                         }
                     });
                     return closestTask;
-                }
-                drop(event) {
-                    // console.log('Event:', 'drop')
-                }
-                dragEnter(event) {
-                    // console.log('Event:', 'dragEnter')
-                }
-                dragLeave(event) {
-                    // console.log('Event:', 'dragLeave')
-                }
-                createSection() {
-                    const wrapper = document.createElement('div');
-                    const button = this.createAddButton(wrapper);
-                    wrapper.append(button);
-                    wrapper.classList.add(this.className);
-                    wrapper.addEventListener('dragover', (e) => {
-                        this.dragOver(e, wrapper);
-                    });
-                    return wrapper;
                 }
             };
             exports_6("rowComponent", rowComponent = new RowComponent({
@@ -322,12 +312,13 @@ System.register("app/Components/RowComponent", ["framework/ComponentBase"], func
                 elementPath: 'row',
                 textareaPath: 'row__text',
                 pencilPath: 'row__icon-pencil',
-                pencilSrc: 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg',
-                checkSrc: 'http://127.0.0.1:5500/dist/img/check.svg',
+                pencilSrc: '/dist/img/pencil-svgrepo-com.svg',
+                checkSrc: '/dist/img/check.svg',
                 errorElementPath: 'row__error',
+                trashPath: 'row__icon-trash',
                 textareaLineLength: 22,
                 addElementPath: 'row__add',
-                addElementText: '+ Add new row'
+                addElementText: '+ Add new row',
             }));
         }
     };
@@ -354,12 +345,8 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "a
                     RowComponent_1.rowComponent.render(element);
                 }
                 initEvents(element) {
-                    element.childNodes[1].childNodes[3].childNodes[1].addEventListener('click', () => {
-                        this.changeTextareaName(element);
-                    });
-                    element.childNodes[1].childNodes[3].childNodes[3].addEventListener('click', () => {
-                        this.deleteElement(element);
-                    });
+                    this.childEvents(element);
+                    this.addCard(element);
                 }
                 createSection() {
                     const wrapper = document.createElement('div');
@@ -385,9 +372,10 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "a
                 elementPath: 'column',
                 textareaPath: 'column__header',
                 pencilPath: 'column__icon-pencil',
-                pencilSrc: 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg',
-                checkSrc: 'http://127.0.0.1:5500/dist/img/check.svg',
+                pencilSrc: '/dist/img/pencil-svgrepo-com.svg',
+                checkSrc: '/dist/img/check.svg',
                 errorElementPath: 'column__error',
+                trashPath: 'column__icon-trash',
                 textareaLineLength: 25,
                 addElementPath: 'column__add',
                 addElementText: '+ Add new column'

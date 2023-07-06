@@ -6,7 +6,6 @@ export interface ComponentBaseInterface {
 	createElement(): HTMLDivElement,
 	createAddButton(wrapper: HTMLDivElement): HTMLButtonElement,
 	initEvents(root: HTMLDivElement): void,
-	addCard(element: HTMLDivElement): void,
 	addListenersOnTextarea(textarea: HTMLTextAreaElement): void,
 	preventLineBreak(textarea: HTMLTextAreaElement): void,
 	changeIcon(icon: HTMLImageElement, src: string): void,

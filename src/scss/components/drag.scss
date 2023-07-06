@@ -2,3 +2,15 @@
 	box-shadow: none;
 	opacity: 0.999;
 }
+
+.hidden {
+	background-color: #c2c2c2;
+
+	.row__headline {
+		visibility: hidden;
+	}
+
+	.row__error {
+		visibility: hidden;
+	}
+}

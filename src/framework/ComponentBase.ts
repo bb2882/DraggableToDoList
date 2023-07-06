@@ -10,6 +10,7 @@ export class ComponentBase implements ComponentBaseInterface {
 	readonly pencilSrc: string
 	readonly checkSrc: string
 	readonly errorElementPath: string
+	readonly trashPath: string
 	readonly textareaLineLength: number
 	readonly addElementPath: string
 	readonly addElementText: string
@@ -24,6 +25,7 @@ export class ComponentBase implements ComponentBaseInterface {
 		this.pencilSrc = config.pencilSrc
 		this.checkSrc = config.checkSrc
 		this.errorElementPath = config.errorElementPath
+		this.trashPath = config.trashPath
 		this.textareaLineLength = config.textareaLineLength
 		this.addElementPath = config.addElementPath
 		this.addElementText = config.addElementText
@@ -42,7 +44,6 @@ export class ComponentBase implements ComponentBaseInterface {
 		element.classList.add(this.elementPath);
 		element.classList.add(className);
 		this.initEvents(element)
-		this.addCard(element)
 		this.num += 1
 		return element
 	}
@@ -72,9 +73,14 @@ export class ComponentBase implements ComponentBaseInterface {
 
 	}
 
-	//for column component
-	addCard(element: HTMLDivElement) {
-
+	childEvents(element: HTMLDivElement) {
+		element.addEventListener('click', (e) => {
+			if ((e.target as Element).matches(`.${this.pencilPath}`)) {
+				this.changeTextareaName(element)
+			} else if ((e.target as Element).matches(`.${this.trashPath}`)) {
+				this.deleteElement(element)
+			}
+		})
 	}
 
 	addListenersOnTextarea(textarea: HTMLTextAreaElement) {
@@ -130,7 +136,7 @@ export class ComponentBase implements ComponentBaseInterface {
 		if (textarea.value.length === 0) {
 			textarea.focus()
 			textarea.style.borderBottom = '1px solid red'
-			errorElement.innerText = 'must have at least 1 character'
+			errorElement.innerText = 'Please, Fill Out This Field'
 			return false
 		}
 
@@ -153,10 +159,9 @@ export class ComponentBase implements ComponentBaseInterface {
 		const errorElement = element.querySelector(`.${this.errorElementPath}`) as HTMLDivElement
 
 		this.addListenersOnTextarea(textarea)
-
 		textarea.value = textarea.value.trim()
 
-		if (icon.src === this.pencilSrc) {
+		if (new URL(icon.src).pathname === this.pencilSrc) {
 			textarea.removeAttribute('readonly')
 			textarea.focus()
 

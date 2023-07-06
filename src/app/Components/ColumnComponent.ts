@@ -12,12 +12,8 @@ class ColumnComponent extends ComponentBase {
 	}
 
 	initEvents(element: HTMLDivElement) {
-		element.childNodes[1].childNodes[3].childNodes[1].addEventListener('click', () => {
-			this.changeTextareaName(element)
-		})
-		element.childNodes[1].childNodes[3].childNodes[3].addEventListener('click', () => {
-			this.deleteElement(element)
-		})
+		this.childEvents(element)
+		this.addCard(element)
 	}
 
 	createSection(): HTMLDivElement {
@@ -45,9 +41,10 @@ export const columnComponent = new ColumnComponent({
 	elementPath: 'column',
 	textareaPath: 'column__header',
 	pencilPath: 'column__icon-pencil',
-	pencilSrc: 'http://127.0.0.1:5500/dist/img/pencil-svgrepo-com.svg',
-	checkSrc: 'http://127.0.0.1:5500/dist/img/check.svg',
+	pencilSrc: '/dist/img/pencil-svgrepo-com.svg',
+	checkSrc: '/dist/img/check.svg',
 	errorElementPath: 'column__error',
+	trashPath: 'column__icon-trash',
 	textareaLineLength: 25,
 	addElementPath : 'column__add',
 	addElementText: '+ Add new column'
