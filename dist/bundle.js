@@ -191,50 +191,26 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
         }
     };
 });
-System.register("app/Components/RowComponent", ["framework/ComponentBase"], function (exports_6, context_6) {
+System.register("app/Components/DragComponent", [], function (exports_6, context_6) {
     "use strict";
-    var ComponentBase_1, RowComponent, rowComponent;
+    var Drag;
     var __moduleName = context_6 && context_6.id;
     return {
-        setters: [
-            function (ComponentBase_1_1) {
-                ComponentBase_1 = ComponentBase_1_1;
-            }
-        ],
+        setters: [],
         execute: function () {
-            RowComponent = class RowComponent extends ComponentBase_1.ComponentBase {
-                constructor(config) {
-                    super(config);
-                    this.rowIconsPath = 'row__icons';
+            Drag = class Drag {
+                constructor(elementPath, rowIconsPath) {
+                    this.elementPath = elementPath;
+                    this.rowIconsPath = rowIconsPath;
                 }
-                initEvents(element) {
-                    this.childEvents(element);
-                    element.draggable = true;
-                    element.addEventListener('dragstart', (e) => {
-                        this.dragStart(e, element);
-                    });
-                    element.addEventListener('dragend', (e) => {
-                        this.dragEnd(e, element);
-                    });
-                }
-                createSection() {
-                    const wrapper = document.createElement('div');
-                    const button = this.createAddButton(wrapper);
-                    wrapper.append(button);
-                    wrapper.classList.add(this.className);
-                    wrapper.addEventListener('dragover', (e) => {
-                        this.dragOver(e, wrapper);
-                    });
-                    return wrapper;
-                }
-                dragStart(event, element) {
+                dragStart(element) {
                     element.classList.add('dragging');
                     setTimeout(() => {
                         element.classList.add('hidden');
                         this.iconsOpacity(0);
                     }, 0);
                 }
-                dragEnd(event, element) {
+                dragEnd(element) {
                     element.classList.remove('dragging');
                     element.classList.remove('hidden');
                     this.iconsOpacity(1);
@@ -295,7 +271,52 @@ System.register("app/Components/RowComponent", ["framework/ComponentBase"], func
                     return closestTask;
                 }
             };
-            exports_6("rowComponent", rowComponent = new RowComponent({
+            exports_6("Drag", Drag);
+        }
+    };
+});
+System.register("app/Components/RowComponent", ["framework/ComponentBase", "app/Components/DragComponent"], function (exports_7, context_7) {
+    "use strict";
+    var ComponentBase_1, DragComponent_1, RowComponent, rowComponent;
+    var __moduleName = context_7 && context_7.id;
+    return {
+        setters: [
+            function (ComponentBase_1_1) {
+                ComponentBase_1 = ComponentBase_1_1;
+            },
+            function (DragComponent_1_1) {
+                DragComponent_1 = DragComponent_1_1;
+            }
+        ],
+        execute: function () {
+            RowComponent = class RowComponent extends ComponentBase_1.ComponentBase {
+                constructor(config) {
+                    super(config);
+                    this.rowIconsPath = 'row__icons';
+                    this.drag = new DragComponent_1.Drag(this.elementPath, this.rowIconsPath);
+                }
+                initEvents(element) {
+                    this.childEvents(element);
+                    element.draggable = true;
+                    element.addEventListener('dragstart', () => {
+                        this.drag.dragStart(element);
+                    });
+                    element.addEventListener('dragend', () => {
+                        this.drag.dragEnd(element);
+                    });
+                }
+                createSection() {
+                    const wrapper = document.createElement('div');
+                    const button = this.createAddButton(wrapper);
+                    wrapper.append(button);
+                    wrapper.classList.add(this.className);
+                    wrapper.addEventListener('dragover', (e) => {
+                        this.drag.dragOver(e, wrapper);
+                    });
+                    return wrapper;
+                }
+            };
+            exports_7("rowComponent", rowComponent = new RowComponent({
                 className: 'rows',
                 template: `
 		<div class='row__headline'>
@@ -323,10 +344,10 @@ System.register("app/Components/RowComponent", ["framework/ComponentBase"], func
         }
     };
 });
-System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "app/Components/RowComponent"], function (exports_7, context_7) {
+System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "app/Components/RowComponent"], function (exports_8, context_8) {
     "use strict";
     var ComponentBase_2, RowComponent_1, ColumnComponent, columnComponent;
-    var __moduleName = context_7 && context_7.id;
+    var __moduleName = context_8 && context_8.id;
     return {
         setters: [
             function (ComponentBase_2_1) {
@@ -356,7 +377,7 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "a
                     return wrapper;
                 }
             };
-            exports_7("columnComponent", columnComponent = new ColumnComponent({
+            exports_8("columnComponent", columnComponent = new ColumnComponent({
                 className: 'columns',
                 template: `
 		<div class='column__headline'>
@@ -383,10 +404,10 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "a
         }
     };
 });
-System.register("app/app.module", ["app/Components/ColumnComponent"], function (exports_8, context_8) {
+System.register("app/app.module", ["app/Components/ColumnComponent"], function (exports_9, context_9) {
     "use strict";
     var ColumnComponent_1, AppModule, appModule;
-    var __moduleName = context_8 && context_8.id;
+    var __moduleName = context_9 && context_9.id;
     return {
         setters: [
             function (ColumnComponent_1_1) {
@@ -406,7 +427,7 @@ System.register("app/app.module", ["app/Components/ColumnComponent"], function (
                     this.components.forEach(c => c.render(root));
                 }
             };
-            exports_8("appModule", appModule = new AppModule({
+            exports_9("appModule", appModule = new AppModule({
                 components: [
                     ColumnComponent_1.columnComponent
                 ],
@@ -414,23 +435,23 @@ System.register("app/app.module", ["app/Components/ColumnComponent"], function (
         }
     };
 });
-System.register("framework/start", [], function (exports_9, context_9) {
+System.register("framework/start", [], function (exports_10, context_10) {
     "use strict";
-    var __moduleName = context_9 && context_9.id;
+    var __moduleName = context_10 && context_10.id;
     function start(module) {
         module.start();
     }
-    exports_9("start", start);
+    exports_10("start", start);
     return {
         setters: [],
         execute: function () {
         }
     };
 });
-System.register("index", ["app/app.module", "framework/start"], function (exports_10, context_10) {
+System.register("index", ["app/app.module", "framework/start"], function (exports_11, context_11) {
     "use strict";
     var app_module_1, start_1;
-    var __moduleName = context_10 && context_10.id;
+    var __moduleName = context_11 && context_11.id;
     return {
         setters: [
             function (app_module_1_1) {
@@ -442,6 +463,15 @@ System.register("index", ["app/app.module", "framework/start"], function (export
         ],
         execute: function () {
             start_1.start(app_module_1.appModule);
+        }
+    };
+});
+System.register("interfaces/DragComponentInterface", [], function (exports_12, context_12) {
+    "use strict";
+    var __moduleName = context_12 && context_12.id;
+    return {
+        setters: [],
+        execute: function () {
         }
     };
 });
