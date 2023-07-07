@@ -1,4 +1,6 @@
-export class Drag {
+import { DragComponentInterface } from '../../interfaces/DragComponentInterface';
+
+export class Drag implements DragComponentInterface{
 	readonly elementPath: string;
 	readonly rowIconsPath: string;
 
