@@ -208,9 +208,9 @@ System.register("app/Components/DragComponent", [], function (exports_7, context
         setters: [],
         execute: function () {
             Drag = class Drag {
-                constructor(elementPath, rowIconsPath) {
+                constructor(elementPath, iconsPath) {
                     this.elementPath = elementPath;
-                    this.rowIconsPath = rowIconsPath;
+                    this.iconsPath = iconsPath;
                 }
                 dragStart(element) {
                     element.classList.add('dragging');
@@ -225,7 +225,7 @@ System.register("app/Components/DragComponent", [], function (exports_7, context
                     this.iconsOpacity(1);
                 }
                 iconsOpacity(num) {
-                    const icons = document.querySelectorAll(`.${this.rowIconsPath}`);
+                    const icons = document.querySelectorAll(`.${this.iconsPath}`);
                     icons.forEach((icon) => {
                         icon.style.opacity = `${num}`;
                     });

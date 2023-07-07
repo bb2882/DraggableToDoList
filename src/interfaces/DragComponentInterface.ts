@@ -1,6 +1,6 @@
 export interface DragComponentInterface {
 	elementPath: string,
-	rowIconsPath: string,
+	iconsPath: string,
 	dragStart(element: HTMLDivElement): void,
 	dragEnd(element: HTMLDivElement): void,
 	iconsOpacity(num: number): void,

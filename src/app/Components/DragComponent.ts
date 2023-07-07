@@ -2,11 +2,11 @@ import { DragComponentInterface } from '../../interfaces/DragComponentInterface'
 
 export class Drag implements DragComponentInterface{
 	readonly elementPath: string;
-	readonly rowIconsPath: string;
+	readonly iconsPath: string;
 
-	constructor(elementPath: string, rowIconsPath: string) {
+	constructor(elementPath: string, iconsPath: string) {
 		this.elementPath = elementPath;
-		this.rowIconsPath = rowIconsPath;
+		this.iconsPath = iconsPath;
 	}
 
 	dragStart(element: HTMLDivElement) {
@@ -24,7 +24,7 @@ export class Drag implements DragComponentInterface{
 	}
 
 	iconsOpacity(num: number) {
-		const icons = document.querySelectorAll(`.${this.rowIconsPath}`) as NodeListOf<HTMLImageElement>
+		const icons = document.querySelectorAll(`.${this.iconsPath}`) as NodeListOf<HTMLImageElement>
 		icons.forEach((icon: HTMLImageElement) => {
 			icon.style.opacity = `${num}`
 		})
