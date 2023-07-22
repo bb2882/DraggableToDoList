@@ -10,5 +10,4 @@ export interface ComponentConfigInterface {
 	trashPath: string,
 	addElementPath: string,
 	addElementText: string,
-	textareaLineLength: number,
 }

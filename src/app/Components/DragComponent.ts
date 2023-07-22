@@ -41,7 +41,7 @@ export class Drag implements DragComponentInterface{
 			wrapper.insertBefore(curTask!, bottomTask)
 		}
 
-		const scrollThreshold = 50;
+		const scrollThreshold = 100;
 		const containerRect = wrapper.getBoundingClientRect();
 		const isNearTop = (event.clientY - containerRect.top) < scrollThreshold;
 		const isNearBottom = (containerRect.bottom - event.clientY) < scrollThreshold;

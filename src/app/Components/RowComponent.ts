@@ -17,9 +17,11 @@ class RowComponent extends ComponentBase {
 		element.draggable = true
 		element.addEventListener('dragstart', () => {
 			this.drag.dragStart(element)
+			this.storage.deleteRow(element)
 		})
 		element.addEventListener('dragend', () => {
 			this.drag.dragEnd(element)
+			this.storage.setRow(element)
 		})
 	}
 
@@ -32,6 +34,21 @@ class RowComponent extends ComponentBase {
 			this.drag.dragOver(e, wrapper)
 		})
 		return wrapper
+	}
+
+	insertElement(button: HTMLButtonElement, wrapper: HTMLDivElement) {
+		button.addEventListener('click', () => {
+			const element = this.createElement()
+			wrapper.insertBefore(element, button)
+			this.changeTextareaName(element)
+			this.storage.setRow(element)
+		})
+	}
+
+	deleteElement(element: HTMLDivElement) {
+		if (element === null || undefined) return
+		element.remove()
+		this.storage.deleteRow(element)
 	}
 
 }
@@ -57,7 +74,6 @@ export const rowComponent = new RowComponent({
 	checkSrc: '/dist/img/check.svg',
 	errorElementPath: 'row__error',
 	trashPath: 'row__icon-trash',
-	textareaLineLength: 22,
 	addElementPath: 'row__add',
 	addElementText: '+ Add new row',
 })

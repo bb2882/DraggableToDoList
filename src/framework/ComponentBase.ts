@@ -1,5 +1,7 @@
 import { ComponentConfigInterface } from '../interfaces/ComponentConfigInterface';
 import { ComponentBaseInterface } from '../interfaces/ComponentBaseInterface';
+import { uuidv4 } from '../utils/uniqueId';
+import { Storage } from '../app/Components/StorageComponent';
 
 export class ComponentBase implements ComponentBaseInterface {
 	readonly className: string
@@ -11,10 +13,9 @@ export class ComponentBase implements ComponentBaseInterface {
 	readonly checkSrc: string
 	readonly errorElementPath: string
 	readonly trashPath: string
-	readonly textareaLineLength: number
 	readonly addElementPath: string
 	readonly addElementText: string
-	public num: number
+	readonly storage: Storage
 
 	constructor(config: ComponentConfigInterface) {
 		this.className = config.className
@@ -26,10 +27,9 @@ export class ComponentBase implements ComponentBaseInterface {
 		this.checkSrc = config.checkSrc
 		this.errorElementPath = config.errorElementPath
 		this.trashPath = config.trashPath
-		this.textareaLineLength = config.textareaLineLength
 		this.addElementPath = config.addElementPath
 		this.addElementText = config.addElementText
-		this.num = 1
+		this.storage = new Storage()
 	}
 
 	render(root: HTMLDivElement) {
@@ -39,13 +39,12 @@ export class ComponentBase implements ComponentBaseInterface {
 
 	createElement(): HTMLDivElement {
 		const element = document.createElement('div') as HTMLDivElement
-		const className = `${this.elementPath}__${this.num}`
+		element.id = uuidv4()
 		element.innerHTML = this.template
 		element.classList.add(this.elementPath);
-		element.classList.add(className);
 		this.initEvents(element)
-		this.num += 1
 		return element
+		
 	}
 
 	createSection(): HTMLDivElement {
@@ -58,15 +57,15 @@ export class ComponentBase implements ComponentBaseInterface {
 
 	createAddButton(wrapper: HTMLDivElement): HTMLButtonElement {
 		const button = document.createElement('button')
-		button.addEventListener('click', () => {
-			const element = this.createElement()
-			wrapper.insertBefore(element, button)
-			this.changeTextareaName(element)
-		})
+		this.insertElement(button, wrapper)
 		button.classList.add('button')
 		button.classList.add(this.addElementPath)
 		button.innerText = this.addElementText 
 		return button
+	}
+
+	insertElement(button: HTMLButtonElement, wrapper: HTMLDivElement) {
+
 	}
 
 	initEvents(element: HTMLDivElement) {
@@ -89,7 +88,6 @@ export class ComponentBase implements ComponentBaseInterface {
 		this.disableSpace(textarea)
 	}
 
-
 	preventLineBreak(textarea: HTMLTextAreaElement) {
 		textarea.addEventListener('keydown', (e) => {
 			if (e.key === 'Enter' && (e.shiftKey || e.code === 'Enter' || e.keyCode === 13)) {
@@ -103,11 +101,11 @@ export class ComponentBase implements ComponentBaseInterface {
 	}
 
 	addRow(textarea: HTMLTextAreaElement) {
-		textarea.addEventListener('input', () => {
-			const value = textarea.value.trim();
-			const lines = value === '' ? 1 : Math.ceil(value.length / this.textareaLineLength);
-			textarea.rows = lines;
-		});
+		textarea.addEventListener('input', e => {
+			textarea.style.height = 'auto';
+			let scrollHeight = (e.target as HTMLTextAreaElement).scrollHeight;
+			textarea.style.height = `${scrollHeight + 1}px`;
+		})
 	}
 
 	disableSpace(textarea: HTMLTextAreaElement) {
@@ -178,9 +176,6 @@ export class ComponentBase implements ComponentBaseInterface {
 	}
 
 	deleteElement(element: HTMLDivElement) {
-		if (element === null || undefined) {
-			return
-		}
-		element.remove()
+
 	}
 }

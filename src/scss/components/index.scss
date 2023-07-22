@@ -3,13 +3,21 @@ body {
 	overflow-y: hidden;
 	overflow-x: auto;
 	background-color: #023e3e;
-	height: 100vh;
 	margin: 0;
 }
 
+textarea {
+	overflow: hidden;
+}
+
+#root {
+	height: 100vh;
+	width: 100vw;
+}
+
 ::-webkit-scrollbar {
-	width: 11px;
-	height: 40px;
+	width: 10px;
+	height: 39px;
 }
 
 ::-webkit-scrollbar-track,

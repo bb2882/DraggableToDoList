@@ -3,12 +3,11 @@
 	position: relative;
 	overflow-y: scroll;
 	overflow-x: hidden;
-	max-height: 90vh;
+	max-height: 84vh;
 }
 
 .row {
 	background-color: #ecf0f1;
-	// width: 230px;
 	min-height: 40px;
 	border-radius: 4px;
 	padding: 10px;
@@ -35,6 +34,10 @@
 		font-weight: 700;
 		cursor: auto;
 		resize: none;
+
+		&::-webkit-scrollbar {
+			width: 0px;
+		}
 	}
 
 	&__add {
@@ -52,5 +55,59 @@
 		.row__icons {
 			visibility: visible;
 		}
+	}
+}
+
+
+
+@media (max-height: 820px) {
+	.rows {
+		max-height: 83vh;
+	}
+}
+
+@media (max-height: 775px) {
+	.rows {
+		max-height: 82vh;
+	}
+}
+@media (max-height: 735px) {
+	.rows {
+		max-height: 81vh;
+	}
+}
+@media (max-height: 695px) {
+	.rows {
+		max-height: 80vh;
+	}
+}
+@media (max-height: 655px) {
+	.rows {
+		max-height: 79vh;
+	}
+}
+@media (max-height: 625px) {
+	.rows {
+		max-height: 78vh;
+	}
+}
+@media (max-height: 600px) {
+	.rows {
+		max-height: 77vh;
+	}
+}
+@media (max-height: 575px) {
+	.rows {
+		max-height: 76vh;
+	}
+}
+@media (max-height: 550px) {
+	.rows {
+		max-height: 75vh;
+	}
+}
+@media (max-height: 530px) {
+	.rows {
+		max-height: 74vh;
 	}
 }

@@ -34,12 +34,118 @@ System.register("interfaces/ComponentConfigInterface", [], function (exports_4, 
         }
     };
 });
-System.register("framework/ComponentBase", [], function (exports_5, context_5) {
+System.register("utils/uniqueId", [], function (exports_5, context_5) {
     "use strict";
-    var ComponentBase;
     var __moduleName = context_5 && context_5.id;
+    function uuidv4() {
+        return ([1e7] +
+            -1e3 +
+            -4e3 +
+            -8e3 +
+            -1e11).replace(/[018]/g, (c) => (Number(c) ^ (crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> (Number(c) / 4))).toString(16));
+    }
+    exports_5("uuidv4", uuidv4);
     return {
         setters: [],
+        execute: function () {
+        }
+    };
+});
+System.register("interfaces/StorageInterface", [], function (exports_6, context_6) {
+    "use strict";
+    var __moduleName = context_6 && context_6.id;
+    return {
+        setters: [],
+        execute: function () {
+        }
+    };
+});
+System.register("app/Components/StorageComponent", [], function (exports_7, context_7) {
+    "use strict";
+    var Storage;
+    var __moduleName = context_7 && context_7.id;
+    return {
+        setters: [],
+        execute: function () {
+            Storage = class Storage {
+                setColumn(column) {
+                    const textarea = column.querySelector('textarea');
+                    let obj = {
+                        id: column.id,
+                        value: textarea.value,
+                        rows: [],
+                    };
+                    textarea.addEventListener('input', () => {
+                        obj.value = textarea.value;
+                        this.saveData();
+                    });
+                    Storage.arr.push(obj);
+                    this.saveData();
+                }
+                setRow(row) {
+                    var _a;
+                    const textarea = row.querySelector('textarea');
+                    const parentId = row.closest('.column').id;
+                    const parentObj = Storage.arr.find((object) => object.id === parentId);
+                    //finding index to place the row after drag
+                    const rows = Array.from((_a = row.parentNode) === null || _a === void 0 ? void 0 : _a.querySelectorAll('.row'));
+                    const foundIndex = rows.findIndex((obj) => obj.id === row.id);
+                    if (parentObj) {
+                        let obj = {
+                            id: row.id,
+                            value: textarea.value,
+                        };
+                        textarea.addEventListener('input', () => {
+                            obj.value = textarea.value;
+                            this.saveData();
+                        });
+                        parentObj.rows.splice(foundIndex, 0, obj);
+                        this.saveData();
+                    }
+                    else {
+                        console.error("Parent object not found for the given parentId:", parentId);
+                    }
+                }
+                deleteColumn(column) {
+                    const item = Storage.arr.find(object => object.id === column.id);
+                    if (item) {
+                        Storage.arr.splice(Storage.arr.indexOf(item), 1);
+                        this.saveData();
+                    }
+                }
+                deleteRow(row) {
+                    const indexToRemove = Storage.arr.findIndex(obj => {
+                        return obj.rows.some(item => item.id === row.id);
+                    });
+                    if (indexToRemove !== -1) {
+                        const objToUpdate = Storage.arr[indexToRemove];
+                        const filteredRows = objToUpdate.rows.filter(item => item.id !== row.id);
+                        objToUpdate.rows = filteredRows;
+                        this.saveData();
+                    }
+                }
+                saveData() {
+                    localStorage.setItem('data', JSON.stringify(Storage.arr));
+                }
+            };
+            Storage.arr = [];
+            exports_7("Storage", Storage);
+        }
+    };
+});
+System.register("framework/ComponentBase", ["utils/uniqueId", "app/Components/StorageComponent"], function (exports_8, context_8) {
+    "use strict";
+    var uniqueId_1, StorageComponent_1, ComponentBase;
+    var __moduleName = context_8 && context_8.id;
+    return {
+        setters: [
+            function (uniqueId_1_1) {
+                uniqueId_1 = uniqueId_1_1;
+            },
+            function (StorageComponent_1_1) {
+                StorageComponent_1 = StorageComponent_1_1;
+            }
+        ],
         execute: function () {
             ComponentBase = class ComponentBase {
                 constructor(config) {
@@ -52,10 +158,9 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     this.checkSrc = config.checkSrc;
                     this.errorElementPath = config.errorElementPath;
                     this.trashPath = config.trashPath;
-                    this.textareaLineLength = config.textareaLineLength;
                     this.addElementPath = config.addElementPath;
                     this.addElementText = config.addElementText;
-                    this.num = 1;
+                    this.storage = new StorageComponent_1.Storage();
                 }
                 render(root) {
                     if (!root)
@@ -64,12 +169,10 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                 }
                 createElement() {
                     const element = document.createElement('div');
-                    const className = `${this.elementPath}__${this.num}`;
+                    element.id = uniqueId_1.uuidv4();
                     element.innerHTML = this.template;
                     element.classList.add(this.elementPath);
-                    element.classList.add(className);
                     this.initEvents(element);
-                    this.num += 1;
                     return element;
                 }
                 createSection() {
@@ -81,15 +184,13 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                 }
                 createAddButton(wrapper) {
                     const button = document.createElement('button');
-                    button.addEventListener('click', () => {
-                        const element = this.createElement();
-                        wrapper.insertBefore(element, button);
-                        this.changeTextareaName(element);
-                    });
+                    this.insertElement(button, wrapper);
                     button.classList.add('button');
                     button.classList.add(this.addElementPath);
                     button.innerText = this.addElementText;
                     return button;
+                }
+                insertElement(button, wrapper) {
                 }
                 initEvents(element) {
                 }
@@ -119,10 +220,10 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     icon.src = src;
                 }
                 addRow(textarea) {
-                    textarea.addEventListener('input', () => {
-                        const value = textarea.value.trim();
-                        const lines = value === '' ? 1 : Math.ceil(value.length / this.textareaLineLength);
-                        textarea.rows = lines;
+                    textarea.addEventListener('input', e => {
+                        textarea.style.height = 'auto';
+                        let scrollHeight = e.target.scrollHeight;
+                        textarea.style.height = `${scrollHeight + 1}px`;
                     });
                 }
                 disableSpace(textarea) {
@@ -181,29 +282,25 @@ System.register("framework/ComponentBase", [], function (exports_5, context_5) {
                     }
                 }
                 deleteElement(element) {
-                    if (element === null || undefined) {
-                        return;
-                    }
-                    element.remove();
                 }
             };
-            exports_5("ComponentBase", ComponentBase);
+            exports_8("ComponentBase", ComponentBase);
         }
     };
 });
-System.register("interfaces/DragComponentInterface", [], function (exports_6, context_6) {
+System.register("interfaces/DragComponentInterface", [], function (exports_9, context_9) {
     "use strict";
-    var __moduleName = context_6 && context_6.id;
+    var __moduleName = context_9 && context_9.id;
     return {
         setters: [],
         execute: function () {
         }
     };
 });
-System.register("app/Components/DragComponent", [], function (exports_7, context_7) {
+System.register("app/Components/DragComponent", [], function (exports_10, context_10) {
     "use strict";
     var Drag;
-    var __moduleName = context_7 && context_7.id;
+    var __moduleName = context_10 && context_10.id;
     return {
         setters: [],
         execute: function () {
@@ -240,7 +337,7 @@ System.register("app/Components/DragComponent", [], function (exports_7, context
                     else {
                         wrapper.insertBefore(curTask, bottomTask);
                     }
-                    const scrollThreshold = 50;
+                    const scrollThreshold = 100;
                     const containerRect = wrapper.getBoundingClientRect();
                     const isNearTop = (event.clientY - containerRect.top) < scrollThreshold;
                     const isNearBottom = (containerRect.bottom - event.clientY) < scrollThreshold;
@@ -280,14 +377,14 @@ System.register("app/Components/DragComponent", [], function (exports_7, context
                     return closestTask;
                 }
             };
-            exports_7("Drag", Drag);
+            exports_10("Drag", Drag);
         }
     };
 });
-System.register("app/Components/RowComponent", ["framework/ComponentBase", "app/Components/DragComponent"], function (exports_8, context_8) {
+System.register("app/Components/RowComponent", ["framework/ComponentBase", "app/Components/DragComponent"], function (exports_11, context_11) {
     "use strict";
     var ComponentBase_1, DragComponent_1, RowComponent, rowComponent;
-    var __moduleName = context_8 && context_8.id;
+    var __moduleName = context_11 && context_11.id;
     return {
         setters: [
             function (ComponentBase_1_1) {
@@ -309,9 +406,11 @@ System.register("app/Components/RowComponent", ["framework/ComponentBase", "app/
                     element.draggable = true;
                     element.addEventListener('dragstart', () => {
                         this.drag.dragStart(element);
+                        this.storage.deleteRow(element);
                     });
                     element.addEventListener('dragend', () => {
                         this.drag.dragEnd(element);
+                        this.storage.setRow(element);
                     });
                 }
                 createSection() {
@@ -324,8 +423,22 @@ System.register("app/Components/RowComponent", ["framework/ComponentBase", "app/
                     });
                     return wrapper;
                 }
+                insertElement(button, wrapper) {
+                    button.addEventListener('click', () => {
+                        const element = this.createElement();
+                        wrapper.insertBefore(element, button);
+                        this.changeTextareaName(element);
+                        this.storage.setRow(element);
+                    });
+                }
+                deleteElement(element) {
+                    if (element === null || undefined)
+                        return;
+                    element.remove();
+                    this.storage.deleteRow(element);
+                }
             };
-            exports_8("rowComponent", rowComponent = new RowComponent({
+            exports_11("rowComponent", rowComponent = new RowComponent({
                 className: 'rows',
                 template: `
 		<div class='row__headline'>
@@ -346,17 +459,16 @@ System.register("app/Components/RowComponent", ["framework/ComponentBase", "app/
                 checkSrc: '/dist/img/check.svg',
                 errorElementPath: 'row__error',
                 trashPath: 'row__icon-trash',
-                textareaLineLength: 22,
                 addElementPath: 'row__add',
                 addElementText: '+ Add new row',
             }));
         }
     };
 });
-System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "app/Components/RowComponent"], function (exports_9, context_9) {
+System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "app/Components/RowComponent"], function (exports_12, context_12) {
     "use strict";
     var ComponentBase_2, RowComponent_1, ColumnComponent, columnComponent;
-    var __moduleName = context_9 && context_9.id;
+    var __moduleName = context_12 && context_12.id;
     return {
         setters: [
             function (ComponentBase_2_1) {
@@ -370,6 +482,41 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "a
             ColumnComponent = class ColumnComponent extends ComponentBase_2.ComponentBase {
                 constructor(config) {
                     super(config);
+                }
+                render(root) {
+                    if (!root)
+                        console.log("No root element found to display interface");
+                    root.append(this.createSection());
+                    this.renderStorageData();
+                }
+                renderStorageData() {
+                    const data = JSON.parse(localStorage.getItem('data') || '[]');
+                    data.forEach((obj) => {
+                        const column = this.createDisplay(this, obj, document);
+                        obj.rows.forEach(objRow => {
+                            const row = this.createDisplay(RowComponent_1.rowComponent, objRow, column);
+                            setTimeout(() => {
+                                this.storage.setRow(row);
+                            }, 0);
+                        });
+                        this.storage.setColumn(column);
+                    });
+                }
+                createDisplay(context, obj, selector) {
+                    const wrapper = selector.querySelector(`.${context.className}`);
+                    const element = context.createElement();
+                    const textarea = element.querySelector('textarea');
+                    const button = selector.querySelector(`.${context.addElementPath}`);
+                    if (obj.value === '')
+                        context.changeTextareaName(element);
+                    element.id = obj.id;
+                    textarea.value = obj.value;
+                    setTimeout(() => {
+                        let scrollHeight = textarea.scrollHeight;
+                        textarea.style.height = `${scrollHeight + 1}px`;
+                    }, 0);
+                    wrapper.insertBefore(element, button);
+                    return element;
                 }
                 addCard(element) {
                     RowComponent_1.rowComponent.render(element);
@@ -385,12 +532,26 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "a
                     wrapper.classList.add(this.className);
                     return wrapper;
                 }
+                insertElement(button, wrapper) {
+                    button.addEventListener('click', () => {
+                        const element = this.createElement();
+                        wrapper.insertBefore(element, button);
+                        this.changeTextareaName(element);
+                        this.storage.setColumn(element);
+                    });
+                }
+                deleteElement(element) {
+                    if (element === null || undefined)
+                        return;
+                    element.remove();
+                    this.storage.deleteColumn(element);
+                }
             };
-            exports_9("columnComponent", columnComponent = new ColumnComponent({
+            exports_12("columnComponent", columnComponent = new ColumnComponent({
                 className: 'columns',
                 template: `
 		<div class='column__headline'>
-			<textarea type='text' maxlength="48" cols='23' rows = '1' class='column__header' placeholder='Enter header for column' readonly></textarea>
+			<textarea type='text' maxlength="40" cols='23' rows = '1' class='column__header' placeholder='Enter header for column' readonly></textarea>
 			<div class='icons column__icons'>
 				<img class='icon icon-pencil column__icon-pencil' draggable="false" src='/dist/img/pencil-svgrepo-com.svg'></img>
 				<img class='icon icon-trash column__icon-trash' draggable="false" src='/dist/img/trash-2-svgrepo-com.svg'></img>
@@ -406,17 +567,16 @@ System.register("app/Components/ColumnComponent", ["framework/ComponentBase", "a
                 checkSrc: '/dist/img/check.svg',
                 errorElementPath: 'column__error',
                 trashPath: 'column__icon-trash',
-                textareaLineLength: 25,
                 addElementPath: 'column__add',
                 addElementText: '+ Add new column'
             }));
         }
     };
 });
-System.register("app/app.module", ["app/Components/ColumnComponent"], function (exports_10, context_10) {
+System.register("app/app.module", ["app/Components/ColumnComponent"], function (exports_13, context_13) {
     "use strict";
     var ColumnComponent_1, AppModule, appModule;
-    var __moduleName = context_10 && context_10.id;
+    var __moduleName = context_13 && context_13.id;
     return {
         setters: [
             function (ColumnComponent_1_1) {
@@ -436,7 +596,7 @@ System.register("app/app.module", ["app/Components/ColumnComponent"], function (
                     this.components.forEach(c => c.render(root));
                 }
             };
-            exports_10("appModule", appModule = new AppModule({
+            exports_13("appModule", appModule = new AppModule({
                 components: [
                     ColumnComponent_1.columnComponent
                 ],
@@ -444,23 +604,23 @@ System.register("app/app.module", ["app/Components/ColumnComponent"], function (
         }
     };
 });
-System.register("framework/start", [], function (exports_11, context_11) {
+System.register("framework/start", [], function (exports_14, context_14) {
     "use strict";
-    var __moduleName = context_11 && context_11.id;
+    var __moduleName = context_14 && context_14.id;
     function start(module) {
         module.start();
     }
-    exports_11("start", start);
+    exports_14("start", start);
     return {
         setters: [],
         execute: function () {
         }
     };
 });
-System.register("index", ["app/app.module", "framework/start"], function (exports_12, context_12) {
+System.register("index", ["app/app.module", "framework/start"], function (exports_15, context_15) {
     "use strict";
     var app_module_1, start_1;
-    var __moduleName = context_12 && context_12.id;
+    var __moduleName = context_15 && context_15.id;
     return {
         setters: [
             function (app_module_1_1) {

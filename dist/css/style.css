@@ -34,13 +34,21 @@ body {
   overflow-y: hidden;
   overflow-x: auto;
   background-color: #023e3e;
-  height: 100vh;
   margin: 0;
 }
 
+textarea {
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+}
+
 ::-webkit-scrollbar {
-  width: 11px;
-  height: 40px;
+  width: 10px;
+  height: 39px;
 }
 
 ::-webkit-scrollbar-track,
@@ -73,6 +81,7 @@ body {
   align-items: flex-start;
 }
 .columns .column {
+  position: relative;
   flex: 0 0 auto;
   padding: 10px;
   padding-right: 5px;
@@ -128,7 +137,7 @@ body {
   position: relative;
   overflow-y: scroll;
   overflow-x: hidden;
-  max-height: 90vh;
+  max-height: 84vh;
 }
 
 .row {
@@ -159,6 +168,9 @@ body {
   cursor: auto;
   resize: none;
 }
+.row__text::-webkit-scrollbar {
+  width: 0px;
+}
 .row__add {
   color: #343538;
   font-size: 14px;
@@ -172,6 +184,56 @@ body {
   visibility: visible;
 }
 
+@media (max-height: 820px) {
+  .rows {
+    max-height: 83vh;
+  }
+}
+@media (max-height: 775px) {
+  .rows {
+    max-height: 82vh;
+  }
+}
+@media (max-height: 735px) {
+  .rows {
+    max-height: 81vh;
+  }
+}
+@media (max-height: 695px) {
+  .rows {
+    max-height: 80vh;
+  }
+}
+@media (max-height: 655px) {
+  .rows {
+    max-height: 79vh;
+  }
+}
+@media (max-height: 625px) {
+  .rows {
+    max-height: 78vh;
+  }
+}
+@media (max-height: 600px) {
+  .rows {
+    max-height: 77vh;
+  }
+}
+@media (max-height: 575px) {
+  .rows {
+    max-height: 76vh;
+  }
+}
+@media (max-height: 550px) {
+  .rows {
+    max-height: 75vh;
+  }
+}
+@media (max-height: 530px) {
+  .rows {
+    max-height: 74vh;
+  }
+}
 .error-element {
   color: red;
   padding: 0px 5px;
