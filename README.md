@@ -1,6 +1,6 @@
 # Draggable Kanban Board - Personal Organizer
 
-![Kanban Board](https://github.com/bb2882/DraggableKanbanBoard/assets/70382872/dc0b52f4-cf36-4fa3-8e88-7d61c5db3100)
+![Kanban Board](https://github.com/bb2882/DraggableKanbanBoard/assets/70382872/219e5ec2-f9f2-43fc-a6a4-aa701b3c510d)
 
 ## Overview
 
