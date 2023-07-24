@@ -33,8 +33,39 @@ class RowComponent extends ComponentBase {
 		wrapper.addEventListener('dragover', (e) => {
 			this.drag.dragOver(e, wrapper)
 		})
+		document.body.addEventListener('dragover', (event) => {
+			event.preventDefault(); // Prevent default behavior to allow dropping
+
+			// Call a separate function for horizontal auto-scrolling on the body
+			this.handleHorizontalScroll(event);
+		});
 		return wrapper
 	}
+
+// Separate function for horizontal auto-scrolling on the body
+ handleHorizontalScroll(event) {
+	console.log(event)
+	const scrollThresholdHorizontal = 100;
+	const bodyRect = document.body.getBoundingClientRect();
+
+	const isNearLeft = (event.clientX - bodyRect.left) < scrollThresholdHorizontal;
+	const isNearRight = (bodyRect.right - event.clientX) < scrollThresholdHorizontal;
+
+	if (isNearLeft || isNearRight) {
+		// Calculate the scroll speed based on the distance from the edges
+		const scrollSpeedHorizontal = isNearLeft
+			? (scrollThresholdHorizontal - (event.clientX - bodyRect.left)) / scrollThresholdHorizontal
+			: (scrollThresholdHorizontal - (bodyRect.right - event.clientX)) / scrollThresholdHorizontal;
+
+		const scrollAmountHorizontal = scrollSpeedHorizontal * 3;
+
+		// Scroll the body horizontally with a smooth behavior
+		window.scrollTo({
+			left: isNearLeft ? window.scrollX - scrollAmountHorizontal : window.scrollX + scrollAmountHorizontal,
+			behavior: 'smooth'
+		});
+	}
+}
 
 	insertElement(button: HTMLButtonElement, wrapper: HTMLDivElement) {
 		button.addEventListener('click', () => {

@@ -18,8 +18,7 @@ export class Drag implements DragComponentInterface{
 	}
 
 	dragEnd(element: HTMLDivElement) {
-		element.classList.remove('dragging')
-		element.classList.remove('hidden')
+		element.classList.remove('dragging', 'hidden')
 		this.iconsOpacity(1)
 	}
 
@@ -32,13 +31,13 @@ export class Drag implements DragComponentInterface{
 
 	dragOver(event: DragEvent, wrapper: HTMLDivElement) {
 		const bottomTask = this.insertAboveTask(wrapper, event.clientY)
-		const curTask = document.querySelector('.dragging')
+		const curTask = document.querySelector('.dragging') as HTMLDivElement
 		const lastChild = wrapper.lastElementChild;
 
 		if (!bottomTask) {
-			wrapper.insertBefore(curTask!, lastChild)
+			wrapper.insertBefore(curTask, lastChild)
 		} else {
-			wrapper.insertBefore(curTask!, bottomTask)
+			wrapper.insertBefore(curTask, bottomTask)
 		}
 
 		const scrollThreshold = 100;
@@ -72,7 +71,7 @@ export class Drag implements DragComponentInterface{
 	insertAboveTask(wrapper: HTMLDivElement, mouseY: number) {
 		const els = wrapper.querySelectorAll(`.${this.elementPath}:not(.dragging)`)
 
-		let closestTask: null | Element = null
+		let closestTask: null | HTMLDivElement = null
 		let closestOffset = Number.NEGATIVE_INFINITY
 
 		els.forEach(task => {
@@ -82,7 +81,7 @@ export class Drag implements DragComponentInterface{
 
 			if (offset < 0 && offset > closestOffset) {
 				closestOffset = offset
-				closestTask = task
+				closestTask = task as HTMLDivElement
 			}
 		})
 
