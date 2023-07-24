@@ -89,8 +89,8 @@ export const columnComponent = new ColumnComponent({
 		<div class='column__headline'>
 			<textarea type='text' maxlength="40" cols='23' rows = '1' class='column__header' placeholder='Enter header for column' readonly></textarea>
 			<div class='icons column__icons'>
-				<img class='icon icon-pencil column__icon-pencil' draggable="false" src='/dist/img/pencil-svgrepo-com.svg'></img>
-				<img class='icon icon-trash column__icon-trash' draggable="false" src='/dist/img/trash-2-svgrepo-com.svg'></img>
+				<img class='icon icon-pencil column__icon-pencil' draggable="false" src='/img/pencil-svgrepo-com.svg'></img>
+				<img class='icon icon-trash column__icon-trash' draggable="false" src='/img/trash-2-svgrepo-com.svg'></img>
 			</div>
 		</div>
 
@@ -99,8 +99,8 @@ export const columnComponent = new ColumnComponent({
 	elementPath: 'column',
 	textareaPath: 'column__header',
 	pencilPath: 'column__icon-pencil',
-	pencilSrc: '/dist/img/pencil-svgrepo-com.svg',
-	checkSrc: '/dist/img/check.svg',
+	pencilSrc: '/img/pencil-svgrepo-com.svg',
+	checkSrc: '/img/check.svg',
 	errorElementPath: 'column__error',
 	trashPath: 'column__icon-trash',
 	addElementPath : 'column__add',

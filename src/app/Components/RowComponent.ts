@@ -43,7 +43,7 @@ class RowComponent extends ComponentBase {
 	}
 
 // Separate function for horizontal auto-scrolling on the body
- handleHorizontalScroll(event) {
+	handleHorizontalScroll(event: MouseEvent) {
 	console.log(event)
 	const scrollThresholdHorizontal = 100;
 	const bodyRect = document.body.getBoundingClientRect();
@@ -91,8 +91,8 @@ export const rowComponent = new RowComponent({
 			<textarea type='text' maxlength='220' cols='22' rows = '1' class='row__text' placeholder='Enter card details' readonly></textarea>
 
 			<div class='icons row__icons'>
-				<img class='icon icon-pencil row__icon-pencil' draggable="false" src='/dist/img/pencil-svgrepo-com.svg'></img>
-				<img class='icon icon-trash row__icon-trash' draggable="false" src='/dist/img/trash-2-svgrepo-com.svg'></img>
+				<img class='icon icon-pencil row__icon-pencil' draggable="false" src='/img/pencil-svgrepo-com.svg'></img>
+				<img class='icon icon-trash row__icon-trash' draggable="false" src='/img/trash-2-svgrepo-com.svg'></img>
 			</div>
 		</div>
 
@@ -101,8 +101,8 @@ export const rowComponent = new RowComponent({
 	elementPath: 'row',
 	textareaPath: 'row__text',
 	pencilPath: 'row__icon-pencil',
-	pencilSrc: '/dist/img/pencil-svgrepo-com.svg',
-	checkSrc: '/dist/img/check.svg',
+	pencilSrc: '/img/pencil-svgrepo-com.svg',
+	checkSrc: '/img/check.svg',
 	errorElementPath: 'row__error',
 	trashPath: 'row__icon-trash',
 	addElementPath: 'row__add',

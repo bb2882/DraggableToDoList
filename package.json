@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"start": "http-server dist -p 8000 -o",
+		"start": "http-server dist -p 8080 -o",
 		"compile": "sass --no-source-map src/scss/style.scss:dist/css/style.css --style expanded --watch",
 		"build": "tsc --build",
 		"watch": "tsc --watch"
