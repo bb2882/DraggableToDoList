@@ -19,7 +19,7 @@ To get started with the Draggable Kanban Board - Personal Organizer, follow thes
 1. Clone the repository to your local machine:
 
 ```
-git clone https://github.com/your-username/draggable-kanban-board.git
+git clone https://github.com/bb2882/DraggableKanbanBoard.git
 ```
 
 2. Install the required dependencies using a package manager like npm or yarn:
